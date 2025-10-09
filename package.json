@@ -1,0 +1,31 @@
+{
+  "name": "1dv613-l3",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "npm run test",
+    "start": "npm run start",
+    "dev": "nodemon start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JuliaLind/1DV610-L3.git"
+  },
+  "author": "Julia Lind",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JuliaLind/1DV610-L3/issues"
+  },
+  "homepage": "https://github.com/JuliaLind/1DV610-L3#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
