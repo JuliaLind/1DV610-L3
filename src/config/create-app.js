@@ -11,6 +11,7 @@ import logger from 'morgan'
 import cors from 'cors'
 import { router } from '../routes/router.js'
 import { ErrorHandler } from './ErrorHandler.js'
+
 /**
  * Creates a new app instance with all the
  * configurations.
@@ -23,16 +24,13 @@ export function createApp() {
 
   app.set('trust proxy', true)
 
-  // use helmet for security
-  app.use(helmet())
+  app.use(helmet())  // use helmet for security
   app.use(express.json())
-  // Enable Cross Origin Resource Sharing (CORS) (https://www.npmjs.com/package/cors).
-  app.use(cors())
+  app.use(cors())   // Enable Cross Origin Resource Sharing (CORS) (https://www.npmjs.com/package/cors).
   app.use(logger('dev'))
 
   app.use('/', router)
 
-  // Error handler.
   app.use(errorHandler.handleError)
 
   return app

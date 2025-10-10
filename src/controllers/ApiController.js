@@ -1,22 +1,50 @@
 /**
- * The starting point of the application.
+ * Controller that handles the API requests.
  *
  * @author Julia Lind
  * @version 1.0.0
  */
 
-import { createApp } from './config/create-app.js'
-// to be exported for testing purposes
-const app = createApp()
-const server = app.listen(process.env.PORT, '0.0.0.0', () => {
-    const address = server.address()
-    const host = address.address === '::' ? 'localhost' : address.address
-    const port = address.port
+import createError from 'http-errors'
+import { RateFetcher } from "@jl225vf/exr"
 
-    console.info(`Server running at http://${host}:${port}`)
-    console.info(`Docs available at http://${host}:${port}/v1/docs`)
-    console.info('Press Ctrl-C to terminate...')
-  })
+export class ApiController {
+  #fetcher
 
+  constructor(fetcher = new RateFetcher()) {
+    this.#fetcher = fetcher
+  }
 
-export { app, connection, server }
+  #setCurrencies (currencies) {
+    this.#fetcher.setCurrencies(currencies ? currencies.split(',') : [])
+  }
+
+  async getByDate(req, res, next) {
+      const { date, currencies, observations } = req.params
+
+      this.#setCurrencies(currencies)
+      const rates = await this.#fetcher.fetchByDate(date, observations)
+
+      res.json(rates)
+  }
+
+  async getByPeriod(req, res, next) {
+      const { startDate, endDate, currencies } = req.params
+
+      this.#setCurrencies(currencies)
+      const rates = await this.#fetcher.fetchByPeriod(startDate, endDate)
+
+      res.json(rates)
+  }
+
+  async getLatest(req, res, next) {
+      const { currencies, observations } = req.params
+
+      this.#setCurrencies(currencies)
+      const rates = await this.#fetcher.fetchLatest(observations)
+
+      res.json(rates)
+  }
+
+  @TODO add fetch available currencies
+}

@@ -1,4 +1,22 @@
+/**
+ * Converts errors to JSON responses.
+ *
+ * Client errors (4xx) are returned as-is.
+ * Server errors (5xx) are returned as a generic message in production,
+ * but include the stack trace in development.
+ *
+ * @author Julia Lind
+ */
 export class ErrorHandler {
+    /**
+     * Handles errors that occur during request processing.
+     *
+     * @param {Error} err - The error object.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @param {Function} next - The next middleware function.
+     * @returns {void}
+     */
     handleError = (err, req, res, next) => {
         if (this.#isClientError(err)) {
             return this.#handleClientError(err, req, res, next)
