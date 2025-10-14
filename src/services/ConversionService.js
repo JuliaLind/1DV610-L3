@@ -8,10 +8,11 @@ export class ConversionService {
    * Converts a single amount between currencies based
    * on latest known exchange rates.
    *
-   * @param {Object} params - the request parameters
+   * @param {object} params - the request parameters
    * @param {number} params.amount - the amount to convert
    * @param {string} params.baseCurrency - the base currency
    * @param {string} params.targetCurrencies - the target currencies
+   * @returns {Promise<object>} The conversion result.
    */
   async convertOne ({ amount, baseCurrency, targetCurrencies }) {
     const converter = new CurrencyConverter()

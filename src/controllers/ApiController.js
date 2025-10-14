@@ -20,10 +20,14 @@ export class ApiController {
    * @param {Function} next - the next middleware function
    */
   async getByDate (req, res, next) {
-    const rateService = new RateService()
-    const rates = await rateService.getByDate(req.params, req.query.observations)
+    try {
+      const rateService = new RateService()
+      const rates = await rateService.getByDate(req.params, req.query.observations)
 
-    res.json(rates)
+      res.json(rates)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -34,11 +38,14 @@ export class ApiController {
    * @param {Function} next - the next middleware function
    */
   async getByPeriod (req, res, next) {
-    const rateService = new RateService()
+    try {
+      const rateService = new RateService()
+      const rates = await rateService.getByPeriod(req.params)
 
-    const rates = await rateService.getByPeriod(req.params)
-
-    res.json(rates)
+      res.json(rates)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -49,10 +56,14 @@ export class ApiController {
    * @param {Function} next - the next middleware function
    */
   async getLatest (req, res, next) {
-    const rateService = new RateService()
-    const rates = await rateService.getLatest(req.params.currencies, req.query.observations)
+    try {
+      const rateService = new RateService()
+      const rates = await rateService.getLatest(req.params.currencies, req.query.observations)
 
-    res.json(rates)
+      res.json(rates)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -63,10 +74,14 @@ export class ApiController {
    * @param {Function} next - the next middleware function
    */
   async getCurrencies (req, res, next) {
-    const rateService = new RateService()
-    const currencies = await rateService.getCurrencies()
+    try {
+      const rateService = new RateService()
+      const currencies = await rateService.getCurrencies()
 
-    res.json(currencies)
+      res.json(currencies)
+    } catch (error) {
+      next(error)
+    }
   }
 
   /**
@@ -77,8 +92,12 @@ export class ApiController {
    * @param {Function} next - the next middleware function
    */
   async convertOne (req, res, next) {
-    const conversionService = new ConversionService()
-    const converted = await conversionService.convertOne(req.params)
-    res.json(converted)
+    try {
+      const conversionService = new ConversionService()
+      const converted = await conversionService.convertOne(req.params)
+      res.json(converted)
+    } catch (error) {
+      next(error)
+    }
   }
 }

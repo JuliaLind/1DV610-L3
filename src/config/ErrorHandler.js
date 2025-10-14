@@ -29,6 +29,7 @@ export class ErrorHandler {
    * Checks if the error is a client error (4xx).
    *
    * @param {Error} err - The error object.
+   * @returns {boolean} True if the error is a client error, false otherwise.
    */
   #isClientError = (err) => {
     return err?.status < 500
@@ -41,6 +42,7 @@ export class ErrorHandler {
    * @param {object} req - The request object.
    * @param {object} res - The response object.
    * @param {Function} next - The next middleware function.
+   * @returns {void}
    */
   #handleClientError = (err, req, res, next) => {
     return res
@@ -58,6 +60,7 @@ export class ErrorHandler {
    * @param {object} req - The request object.
    * @param {object} res - The response object.
    * @param {Function} next - The next middleware function.
+   * @returns {void}
    */
   #handleServerError = (err, req, res, next) => {
     let details = {
@@ -77,9 +80,9 @@ export class ErrorHandler {
    * Returns an object with error message and stack trace.
    *
    * @param {Error} error - the error that has been caught
-   * @returns {Object} - the error details
+   * @returns {object} - the error details
    */
-  #getErrorDetails(error) {
+  #getErrorDetails (error) {
     return {
       message: error.message,
       details: error.stack
