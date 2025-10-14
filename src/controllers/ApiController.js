@@ -12,6 +12,21 @@ import { ConversionService } from '../services/ConversionService.js'
  * Handles API requests
  */
 export class ApiController {
+  #rateService
+  #conversionService
+
+  /**
+   * Creates an instance of the ApiController.
+   *
+   * @param {object} dependencies - The dependencies to be used by the API.
+   * @param {RateService} dependencies.rateService - The rate service instance.
+   * @param {ConversionService} dependencies.conversionService - The conversion service instance.
+   */
+  constructor(dependencies) {
+    this.#rateService = dependencies?.rateService || new RateService()
+    this.#conversionService = dependencies?.conversionService || new ConversionService()
+  }
+
   /**
    * Handles requests to get exchange rates by date.
    *
@@ -19,10 +34,9 @@ export class ApiController {
    * @param {object} res - the response object
    * @param {Function} next - the next middleware function
    */
-  async getByDate (req, res, next) {
+  getByDate = async (req, res, next) => {
     try {
-      const rateService = new RateService()
-      const rates = await rateService.getByDate(req.params, req.query.observations)
+      const rates = await this.#rateService.getByDate(req.params, req.query.observations)
 
       res.json(rates)
     } catch (error) {
@@ -37,10 +51,9 @@ export class ApiController {
    * @param {object} res - the response object
    * @param {Function} next - the next middleware function
    */
-  async getByPeriod (req, res, next) {
+  getByPeriod = async (req, res, next) => {
     try {
-      const rateService = new RateService()
-      const rates = await rateService.getByPeriod(req.params)
+      const rates = await this.#rateService.getByPeriod(req.params)
 
       res.json(rates)
     } catch (error) {
@@ -55,10 +68,9 @@ export class ApiController {
    * @param {object} res - the response object
    * @param {Function} next - the next middleware function
    */
-  async getLatest (req, res, next) {
+  getLatest = async (req, res, next) => {
     try {
-      const rateService = new RateService()
-      const rates = await rateService.getLatest(req.params.currencies, req.query.observations)
+      const rates = await this.#rateService.getLatest(req.params.currencies, req.query.observations)
 
       res.json(rates)
     } catch (error) {
@@ -73,10 +85,9 @@ export class ApiController {
    * @param {object} res - the response object
    * @param {Function} next - the next middleware function
    */
-  async getCurrencies (req, res, next) {
+  getCurrencies = async (req, res, next) => {
     try {
-      const rateService = new RateService()
-      const currencies = await rateService.getCurrencies()
+      const currencies = await this.#rateService.getCurrencies()
 
       res.json(currencies)
     } catch (error) {
@@ -91,10 +102,10 @@ export class ApiController {
    * @param {object} res - the response object
    * @param {Function} next - the next middleware function
    */
-  async convertOne (req, res, next) {
+  convertOne = async (req, res, next) => {
     try {
-      const conversionService = new ConversionService()
-      const converted = await conversionService.convertOne(req.params)
+      const converted = await this.#conversionService.convertOne(req.params)
+
       res.json(converted)
     } catch (error) {
       next(error)

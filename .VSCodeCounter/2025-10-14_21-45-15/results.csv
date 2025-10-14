@@ -1,0 +1,16 @@
+"filename", "language", "JavaScript", "JSON", "comment", "blank", "total"
+"c:\Users\JuliaLind\Desktop\school\L3\src\config\ErrorHandler.js", "JavaScript", 36, 0, 48, 8, 92
+"c:\Users\JuliaLind\Desktop\school\L3\src\config\create-app.js", "JavaScript", 18, 0, 13, 7, 38
+"c:\Users\JuliaLind\Desktop\school\L3\src\config\start-app.js", "JavaScript", 11, 0, 6, 3, 20
+"c:\Users\JuliaLind\Desktop\school\L3\src\config\swagger-spec.json", "JSON", 0, 0, 0, 1, 1
+"c:\Users\JuliaLind\Desktop\school\L3\src\config\swagger.js", "JavaScript", 0, 0, 0, 1, 1
+"c:\Users\JuliaLind\Desktop\school\L3\src\controllers\ApiController.js", "JavaScript", 50, 0, 51, 14, 115
+"c:\Users\JuliaLind\Desktop\school\L3\src\routes\api\router.js", "JavaScript", 11, 0, 7, 10, 28
+"c:\Users\JuliaLind\Desktop\school\L3\src\routes\api\v1\router.js", "JavaScript", 8, 0, 6, 8, 22
+"c:\Users\JuliaLind\Desktop\school\L3\src\routes\gui\router.js", "JavaScript", 0, 0, 0, 1, 1
+"c:\Users\JuliaLind\Desktop\school\L3\src\routes\router.js", "JavaScript", 14, 0, 6, 6, 26
+"c:\Users\JuliaLind\Desktop\school\L3\src\server.js", "JavaScript", 4, 0, 7, 2, 13
+"c:\Users\JuliaLind\Desktop\school\L3\src\services\ConversionService.js", "JavaScript", 9, 0, 13, 4, 26
+"c:\Users\JuliaLind\Desktop\school\L3\src\services\RateService.js", "JavaScript", 25, 0, 44, 8, 77
+"c:\Users\JuliaLind\Desktop\school\L3\src\services\SwaggerService.js", "JavaScript", 16, 0, 13, 5, 34
+"Total", "-", 202, 0, 214, 78, 494

@@ -7,12 +7,16 @@
 import createError from 'http-errors'
 import express from 'express'
 
+import { router as apiRouter } from './api/router.js'
+
 export const router = express.Router()
+
+router.use('/api', apiRouter)
 
 router.get('/',
   (req, res) => {
     res.status(200).json({
-      message: 'Welcome to the EXR API '
+      message: 'placeholder, serve index.html here',
     })
   })
 

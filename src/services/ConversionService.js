@@ -1,4 +1,5 @@
 import { CurrencyConverter } from '@jl225vf/exr'
+import { stringToArray } from './lib/functions.js'
 
 /**
  * Conversion service for converting amounts between currencies.
@@ -18,7 +19,7 @@ export class ConversionService {
     const converter = new CurrencyConverter()
 
     converter.setBaseCurrency(baseCurrency)
-    converter.setTargetCurrencies(targetCurrencies?.split('+') || [])
+    converter.setTargetCurrencies(stringToArray(targetCurrencies))
 
     return await converter.convert(amount)
   }

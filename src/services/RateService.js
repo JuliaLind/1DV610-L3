@@ -1,4 +1,5 @@
 import { RateFetcher } from '@jl225vf/exr'
+import { stringToArray } from './lib/functions.js'
 
 /**
  * Service for fetching exchange rates.
@@ -9,7 +10,7 @@ export class RateService {
   /**
    * Creates a new instance of RateService.
    *
-   * @param {RateFetcher} fetcher - class that fetches data from the Norway bank API.
+   * @param {RateFetcher} fetcher - class that fetches data from the Norway API.
    */
   constructor (fetcher = new RateFetcher()) {
     this.#fetcher = fetcher
@@ -53,6 +54,7 @@ export class RateService {
    */
   async getLatest (currencies, observations = 1) {
     this.#setCurrencies(currencies)
+
     return await this.#fetcher.fetchLatest(observations)
   }
 
@@ -71,6 +73,6 @@ export class RateService {
    * @param {string} currencies A string of currencies separated by '+', e.g. 'USD+EUR+GBP'
    */
   #setCurrencies (currencies) {
-    this.#fetcher.setCurrencies(currencies?.split('+') || [])
+    this.#fetcher.setCurrencies(stringToArray(currencies))
   }
 }

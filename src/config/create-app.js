@@ -9,7 +9,7 @@ import express from 'express'
 import helmet from 'helmet'
 import logger from 'morgan'
 import cors from 'cors'
-import { router } from '../routes/router.js'
+
 import { ErrorHandler } from './ErrorHandler.js'
 
 /**
@@ -18,7 +18,7 @@ import { ErrorHandler } from './ErrorHandler.js'
  *
  * @returns {object} The app instance.
  */
-export function createApp () {
+export function createApp (router) {
   const app = express()
   const errorHandler = new ErrorHandler()
 

@@ -6,6 +6,7 @@
  */
 export function startApp (app) {
   const port = process.env.PORT || 3000
+
   const server = app.listen(port, '0.0.0.0', () => {
     const address = server.address()
     const host = address.address === '::' ? 'localhost' : address.address
