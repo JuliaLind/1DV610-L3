@@ -18,15 +18,15 @@ import { ErrorHandler } from './ErrorHandler.js'
  *
  * @returns {object} The app instance.
  */
-export function createApp() {
+export function createApp () {
   const app = express()
   const errorHandler = new ErrorHandler()
 
   app.set('trust proxy', true)
 
-  app.use(helmet())  // use helmet for security
+  app.use(helmet()) // use helmet for security
   app.use(express.json())
-  app.use(cors())   // Enable Cross Origin Resource Sharing (CORS) (https://www.npmjs.com/package/cors).
+  app.use(cors()) // Enable Cross Origin Resource Sharing (CORS) (https://www.npmjs.com/package/cors).
   app.use(logger('dev'))
 
   app.use('/', router)
