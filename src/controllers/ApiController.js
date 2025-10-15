@@ -22,7 +22,7 @@ export class ApiController {
    * @param {RateService} dependencies.rateService - The rate service instance.
    * @param {ConversionService} dependencies.conversionService - The conversion service instance.
    */
-  constructor(dependencies) {
+  constructor (dependencies) {
     this.#rateService = dependencies?.rateService || new RateService()
     this.#conversionService = dependencies?.conversionService || new ConversionService()
   }

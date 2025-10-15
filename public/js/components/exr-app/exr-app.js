@@ -5,7 +5,6 @@
  * @version 1.1.1
  */
 
-
 const template = document.createElement('template')
 
 template.innerHTML = `
@@ -34,25 +33,25 @@ customElements.define('exr-app',
     /**
      * Creates an instance of current class.
      */
-  constructor () {
-    super()
-    // Create the shadow root first
-    const shadow = this.attachShadow({ mode: 'open' })
-      .append(template.content.cloneNode(true))
+    constructor () {
+      super()
+      // Create the shadow root first
+      const shadow = this.attachShadow({ mode: 'open' })
+        .append(template.content.cloneNode(true))
 
-    this.#main = shadow.querySelector('main')
-  }
+      this.#main = shadow.querySelector('main')
+    }
+
     /**
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
-    connectedCallback() {
+    connectedCallback () {
     }
 
     /**
      * Called when the element is removed from the DOM. Removes eventlistener.
      */
-    disconnectedCallback() {
+    disconnectedCallback () {
       this.#abortController.abort()
     }
   })
-

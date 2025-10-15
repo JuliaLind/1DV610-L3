@@ -21,7 +21,3 @@ router.get('/',
       documentation: '/api/swagger/'
     })
   })
-
-
-
-
