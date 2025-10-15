@@ -1,5 +1,5 @@
 /**
- * Contains the main router.
+ * Contains the API router.
  *
  * @author Julia Lind
  * @version 1.0.0
@@ -22,6 +22,6 @@ router.get('/',
     })
   })
 
-  
+
 
 
