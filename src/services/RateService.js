@@ -1,5 +1,6 @@
 import { RateFetcher } from '@jl225vf/exr'
 import { stringToArray } from './lib/functions.js'
+import { RateMerger } from './lib/RateMerger.js'
 
 /**
  * Service for fetching exchange rates.
@@ -16,6 +17,13 @@ export class RateService {
     this.#fetcher = fetcher
   }
 
+  mergeRates (ratesObj) {
+    const merger = new RateMerger()
+    const mergedRates = merger.merge(ratesObj)
+    return mergedRates
+  }
+
+
   /**
    * Returns exchange rates on specified date
    * (and perceeding days if observations is set to more than 1).
@@ -28,7 +36,8 @@ export class RateService {
    */
   async getByDate ({ date, currencies }, observations = 1) {
     this.#setCurrencies(currencies)
-    return await this.#fetcher.fetchByDate(date, observations)
+    const rates = await this.#fetcher.fetchByDate(date, observations)
+    return this.mergeRates(rates)
   }
 
   /**
@@ -42,7 +51,9 @@ export class RateService {
    */
   async getByPeriod ({ startDate, endDate, currencies }) {
     this.#setCurrencies(currencies)
-    return await this.#fetcher.fetchByPeriod(startDate, endDate)
+
+    const rates = await this.#fetcher.fetchByPeriod(startDate, endDate)
+    return this.mergeRates(rates)
   }
 
   /**
@@ -55,7 +66,8 @@ export class RateService {
   async getLatest (currencies, observations = 1) {
     this.#setCurrencies(currencies)
 
-    return await this.#fetcher.fetchLatest(observations)
+    const rates = await this.#fetcher.fetchLatest(observations)
+    return this.mergeRates(rates)
   }
 
   /**

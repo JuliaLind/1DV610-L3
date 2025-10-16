@@ -20,8 +20,25 @@ template.innerHTML = `
   </style>
 
 <main>
+<template id="tr-template">
+  <tr>
+    <td class="currency"></td>
+    <td class="value"></td>
+  </tr>
+</template>
+
 <h1>Test</h1>
   <conversion-form></conversion-form>
+  <table id="results" part="results">
+    <thead>
+      <tr>
+        <th>Currency</th>
+        <th>Rate</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
 </main>
 
 `
@@ -52,6 +69,10 @@ customElements.define('main-view',
      */
     async connectedCallback () {
       await this.#prepareForm()
+    }
+
+    addEventListeners () {
+      this.#form.addEventListener('submit', this.#onSubmit, { signal: this.#abortController.signal })
     }
 
     /**
@@ -89,6 +110,28 @@ customElements.define('main-view',
 
       if (currencies) {
         this.#form.renderCurrencyOptions(currencies)
+      }
+    }
+
+    #onSubmit = async (event) => {
+      event.preventDefault()
+
+      const results = await this.#apiService.submitConversion(event.detail)
+      this.#renderResults(results)
+    }
+
+    #renderResults (results) {
+      const tbody = this.shadowRoot.querySelector('#results tbody')
+      tbody.innerHTML = ''
+
+      for (const [currency, value ] of Object.entries(results)) {
+        const row = this.shadowRoot.querySelector('#tr-template').content.cloneNode(true)
+        const currencyCell = row.querySelector('.currency')
+        const valueCell = row.querySelector('.value')
+
+        currencyCell.textContent = currency
+        valueCell.textContent = value
+        tbody.append(row)
       }
     }
 
