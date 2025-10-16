@@ -6,10 +6,9 @@
  */
 import './form/conversion-form.js'
 import './form/checkable-option.js'
-import '../services/ApiService.js'
+import { ApiService } from '../services/ApiService.js'
 
 const template = document.createElement('template')
-
 
 template.innerHTML = `
   <style>
@@ -39,7 +38,7 @@ customElements.define('main-view',
     /**
      * Creates an instance of current class.
      */
-    constructor() {
+    constructor () {
       super()
 
       const shadow = this.attachShadow({ mode: 'open' })
@@ -51,16 +50,16 @@ customElements.define('main-view',
     /**
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
-    async connectedCallback() {
+    async connectedCallback () {
       await this.#prepareForm()
     }
 
     /**
      * Fetches the list of available currencies from the API.
      *
-     * @returns {array} - a list of currency objects containing currency name and currency id
+     * @returns {Array} - a list of currency objects containing currency name and currency id
      */
-    async #fetchCurrencies() {
+    async #fetchCurrencies () {
       try {
         return await this.#apiService.fetchCurrencies()
       } catch (error) {
@@ -73,7 +72,7 @@ customElements.define('main-view',
      *
      * @param {Error} error - the error object.
      */
-    #handleError(error) {
+    #handleError (error) {
       const errorEvent = new CustomEvent(
         'fetch-error',
         { detail: { message: error.message } }
@@ -85,7 +84,7 @@ customElements.define('main-view',
     /**
      * Prepares the form by fetching currencies and rendering options.
      */
-    async #prepareForm() {
+    async #prepareForm () {
       const currencies = await this.#fetchCurrencies()
 
       if (currencies) {
@@ -93,12 +92,10 @@ customElements.define('main-view',
       }
     }
 
-
-
     /**
      * Called when the element is removed from the DOM. Removes eventlistener.
      */
-    disconnectedCallback() {
+    disconnectedCallback () {
       this.#abortController.abort()
     }
   })

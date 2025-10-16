@@ -8,7 +8,6 @@
 import './checkable-select.js'
 import './checkable-option.js'
 
-
 const template = document.createElement('template')
 
 template.innerHTML = `
@@ -41,87 +40,87 @@ template.innerHTML = `
 `
 
 customElements.define('conversion-form',
+  /**
+   * Represents a conversion-form element.
+   */
+  class extends HTMLElement {
+    #form
+    #abortController = new AbortController()
+
     /**
-     * Represents a conversion-form element.
+     * Creates an instance of current class.
      */
-    class extends HTMLElement {
-        #form
-        #abortController = new AbortController()
+    constructor () {
+      super()
 
-        /**
-         * Creates an instance of current class.
-         */
-        constructor() {
-            super()
+      const shadow = this.attachShadow({ mode: 'open' })
+        .append(template.content.cloneNode(true))
 
-            const shadow = this.attachShadow({ mode: 'open' })
-                .append(template.content.cloneNode(true))
+      this.#form = shadow.querySelector('form')
+    }
 
-            this.#form = shadow.querySelector('form')
-        }
+    /**
+     * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
+     */
+    connectedCallback () {
+      this.#form.addEventListener('submit', this.onSubmit, { signal: this.#abortController.signal })
+    }
 
-        /**
-         * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
-         */
-        connectedCallback() {
-            this.#form.addEventListener('submit', this.onSubmit, { signal: this.#abortController.signal })
-        }
+    /**
+     * Renders the currency options in the form.
+     *
+     * @param {Array<object>} currencies - The currencies to make options from.
+     */
+    renderCurrencyOptions (currencies) {
+      const baseSelectContent = this.#form.querySelector('#base')
+      const targetSelectContent = this.#form.querySelector('#targets')
 
-        /**
-         * Renders the currency options in the form.
-         *
-         * @param {Array<Object>} currencies - The currencies to make options from.
-         */
-        renderCurrencyOptions(currencies) {
-            const baseSelectContent = this.#form.querySelector('#base')
-            const targetSelectContent = this.#form.querySelector('#targets')
+      for (const currency of currencies) {
+        baseSelectContent.append(this.#createOption(currency, 'option'))
+        targetSelectContent.append(this.#createOption(currency, 'checkable-option'))
+      }
+    }
 
-            for (const currency of currencies) {
-                baseSelectContent.append(this.#createOption(currency, 'option'))
-                targetSelectContent.append(this.#createOption(currency, 'checkable-option'))
-            }
-        }
+    /**
+     * Creates an option/checkable-option element from a currency object.
+     *
+     * @param {object} currency - The currency to create an option from.
+     * @param {string} optionType - option or checkable-option
+     * @returns {HTMLElement} option or checkable-option element
+     */
+    #createOption (currency, optionType = 'option') {
+      const option = document.createElement(optionType)
 
-        /**
-         *
-         * @param {Object} currency - The currency to create an option from.
-         * @param {String} optionType - option or checkable-option
-         * @returns {HTMLElement} option or checkable-option element
-         */
-        #createOption(currency, optionType) {
-            const option = document.createElement(optionType)
+      option.setAttribute('value', currency.id)
+      option.textContent = `${currency.id} - ${currency.name}`
 
-            option.setAttribute('value', currency.id)
-            option.textContent = `${currency.id} - ${currency.name}`
+      return option
+    }
 
-            return option
-        }
+    /**
+     * Called when the user submits the form. Dispatches a submit event with the form data.
+     *
+     * @param {SubmitEvent} event - event emitted when the user submits the form
+     */
+    onSubmit = (event) => {
+      event.preventDefault()
 
-        /**
-         * Called when the user submits the form. Dispatches a submit event with the form data.
-         *
-         * @param {submit} event - event emitted when the user submits the form 
-         */
-        onSubmit = (event) => {
-            event.preventDefault()
+      const amount = this.#form.querySelector('#amount').value
+      const base = this.#form.querySelector('#base').value
+      const targets = Array.from(this.#form.querySelector('#targets').getAttribute('value'))
 
-            const amount = this.#form.querySelector('#amount').value
-            const base = this.#form.querySelector('#base').value
-            const targets = Array.from(this.#form.querySelector('#targets').getAttribute('value'))
+      const submitEvent = new CustomEvent(
+        'submit',
+        { detail: { amount, base, targets } }
+      )
 
-            const submitEvent = new CustomEvent(
-                'submit',
-                { detail: { amount, base, targets } }
-            )
+      this.dispatchEvent(submitEvent)
+    }
 
-            this.dispatchEvent(submitEvent)
-        }
-
-
-        /**
-         * Called when the element is removed from the DOM. Removes eventlistener.
-         */
-        disconnectedCallback() {
-            this.#abortController.abort()
-        }
-    })
+    /**
+     * Called when the element is removed from the DOM. Removes eventlistener.
+     */
+    disconnectedCallback () {
+      this.#abortController.abort()
+    }
+  })

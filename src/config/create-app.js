@@ -16,7 +16,7 @@ import { ErrorHandler } from './ErrorHandler.js'
  * Creates a new app instance with all the
  * configurations.
  *
- * @param router
+ * @param {object} router - the router to use for the app
  * @returns {object} The app instance.
  */
 export function createApp (router) {
