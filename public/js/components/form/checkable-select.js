@@ -21,7 +21,7 @@ customElements.define('checkable-select',
      * Represents a checkable option in a select list.
      */
     class extends HTMLElement {
-        #selectedOptions = new Set()
+        #selected = new Set()
         #abortController = new AbortController()
 
 
@@ -36,12 +36,20 @@ customElements.define('checkable-select',
 
         }
 
+        /**
+         * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
+         */
         connectedCallback() {
             this.addEventListener('click', this.onClick, {
                 signal: this.#abortController.signal
             })
         }
 
+        /**
+         * Called when user clicks within the slot (not shadowdom).
+         *
+         * @param {click} event - click event
+         */
         onClick = (event) => {
             const option = event.target.closest('checkable-option')
 
@@ -50,6 +58,11 @@ customElements.define('checkable-select',
             }
         }
 
+        /**
+         * Toggles selection of the clicked option by adding/removing it from the selected set.
+         *
+         * @param {HTMLElement} option - the checkable option that was closest to the click
+         */
         #toggleSelection(option) {
             if (this.#isSelected(option)) {
                 this.#select(option)
@@ -58,22 +71,44 @@ customElements.define('checkable-select',
             }
         }
 
+        /**
+         * Checks if the clicked option is selected.
+         *
+         * @param {HTMLElement} option - the clicked option
+         * @returns {boolean} - true if the option is selected, false otherwise
+         */
         #isSelected(option) {
             return option.hasAttribute('checked') && option.getAttribute('checked').toLowerCase() === 'true'
         }
 
+        /**
+         * Adds the value of selected option to the selected set.
+         *
+         * @param {HTMLElement} option - the checkable option that has been selected by user.
+         */
         #select(option) {
-            this.#selectedOptions.add(option.getAttribute('value'))
+            this.#selected.add(option.getAttribute('value'))
         }
 
+        /**
+         * Removes the value of selected option from the selected set.
+         *
+         * @param {HTMLElement} option - the checkable option that has been unselected by user.
+         */
         #unselect(option) {
-            this.#selectedOptions.delete(option.getAttribute('value'))
+            this.#selected.delete(option.getAttribute('value'))
         }
 
+        /**
+         * Gets the value of the specified attribute or an array of the values of the selected options.
+         *
+         * @param {string} attributeName - name of the attribute
+         * @returns {string | Array<String>} - the value of the attribute or values of selected options.
+         */
         getAttribute(attributeName) {
             switch (attributeName) {
                 case 'value':
-                    return this.#selectedOptions
+                    return Array.from(this.#selected)
                 default:
                     return super.getAttribute(attributeName)
             }

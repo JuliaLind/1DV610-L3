@@ -55,28 +55,39 @@ customElements.define('main-view',
       await this.#prepareForm()
     }
 
+    /**
+     * Fetches the list of available currencies from the API.
+     *
+     * @returns {array} - a list of currency objects containing currency name and currency id
+     */
     async #fetchCurrencies() {
       try {
         return await this.#apiService.fetchCurrencies()
       } catch (error) {
-        this.#dispatchEvent('fetch-error', { message: error.message })
+        this.#handleError(error)
       }
     }
 
-    #dispatchEvent(name, detail = {}) {
-      this.dispatchEvent(
-        new CustomEvent(name, { detail })
+    /**
+     * Handles errors that occur during API calls.
+     *
+     * @param {Error} error - the error object.
+     */
+    #handleError(error) {
+      const errorEvent = new CustomEvent(
+        'fetch-error',
+        { detail: { message: error.message } }
       )
+
+      this.dispatchEvent(errorEvent)
     }
 
-    #dispatchEvent(name, detail = {}) {
-      this.dispatchEvent(
-        new CustomEvent(name, { detail })
-      )
-    }
-
+    /**
+     * Prepares the form by fetching currencies and rendering options.
+     */
     async #prepareForm() {
       const currencies = await this.#fetchCurrencies()
+
       if (currencies) {
         this.#form.renderCurrencyOptions(currencies)
       }
