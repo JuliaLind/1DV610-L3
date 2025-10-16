@@ -1,1 +1,1 @@
-import './components/exr-app/index.js'
+import './components/main-view.js'
