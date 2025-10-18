@@ -45,7 +45,7 @@ export class RateService {
    * @param {string} observations - the number of observations to fetch (default: 1)
    * @returns {Promise<object>} The exchange rates.
    */
-  async getByDate ({ date, currencies }, observations = 1) {
+  async getByDate ({ date, currencies }, observations = '1') {
     const rates = await this.#fetcher.fetchByDate({ date, currencies: stringToArray(currencies) }, observations)
 
     return this.#calculateAverage(rates)
@@ -74,7 +74,7 @@ export class RateService {
    * @param {string} observations - the number of observations to fetch (default: 1)
    * @returns {Promise<object>} The exchange rates.
    */
-  async getLatest (currencies, observations = 1) {
+  async getLatest (currencies, observations = '1') {
     const rates = await this.#fetcher.fetchLatest({ currencies: stringToArray(currencies)}, observations)
 
     return this.#calculateAverage(rates)
