@@ -35,12 +35,23 @@
     "c8": "^10.1.3",
     "chai": "^6.2.0",
     "chai-as-promised": "^8.0.2",
-    "chai-http": "^5.1.2",
     "eslint-plugin-chai-friendly": "^1.1.0",
     "mocha": "^11.7.4",
     "nodemon": "^3.1.10",
     "sinon": "^21.0.0",
-    "sinon-chai": "^4.0.1"
+    "sinon-chai": "^4.0.1",
+    "supertest": "^7.1.4"
+  },
+  "c8": {
+    "all": true,
+    "include": [
+      "src/**/*.js",
+      "public/js/services/*.js"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ]
   },
   "eslintConfig": {
     "extends": "@lnu",

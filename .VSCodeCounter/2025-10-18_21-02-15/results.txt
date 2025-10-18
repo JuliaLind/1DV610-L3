@@ -1,0 +1,52 @@
+Date : 2025-10-18 21:02:15
+Directory : c:\Users\JuliaLind\Desktop\school\L3\src
+Total : 16 files,  273 codes, 319 comments, 99 blanks, all 691 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         15 |        273 |        319 |         98 |        690 |
+| JSON       |          1 |          0 |          0 |          1 |          1 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                   | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                      |         16 |        273 |        319 |         99 |        691 |
+| . (Files)                                                              |          1 |          5 |          7 |          2 |         14 |
+| config                                                                 |          5 |         64 |         68 |         22 |        154 |
+| controllers                                                            |          1 |         50 |         51 |         14 |        115 |
+| routes                                                                 |          3 |         35 |         19 |         21 |         75 |
+| routes (Files)                                                         |          1 |         15 |          6 |          8 |         29 |
+| routes\api                                                             |          2 |         20 |         13 |         13 |         46 |
+| routes\api (Files)                                                     |          1 |         11 |          7 |          6 |         24 |
+| routes\api\v1                                                          |          1 |          9 |          6 |          7 |         22 |
+| services                                                               |          6 |        119 |        174 |         40 |        333 |
+| services (Files)                                                       |          3 |         44 |         87 |         21 |        152 |
+| services\lib                                                           |          3 |         75 |         87 |         19 |        181 |
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                               | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\ErrorHandler.js        | JavaScript |         36 |         48 |          8 |         92 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\create-app.js          | JavaScript |         17 |         14 |          8 |         39 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\start-app.js           | JavaScript |         11 |          6 |          4 |         21 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\swagger-spec.json      | JSON       |          0 |          0 |          1 |          1 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\swagger.js             | JavaScript |          0 |          0 |          1 |          1 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\controllers\ApiController.js  | JavaScript |         50 |         51 |         14 |        115 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\routes\api\router.js          | JavaScript |         11 |          7 |          6 |         24 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\routes\api\v1\router.js       | JavaScript |          9 |          6 |          7 |         22 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\routes\router.js              | JavaScript |         15 |          6 |          8 |         29 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\server.js                     | JavaScript |          5 |          7 |          2 |         14 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\ConversionService.js | JavaScript |         10 |         13 |          4 |         27 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\RateService.js       | JavaScript |         34 |         45 |         11 |         90 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\SwaggerService.js    | JavaScript |          0 |         29 |          6 |         35 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\lib\Average.js       | JavaScript |         48 |         55 |         12 |        115 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\lib\RateMerger.js    | JavaScript |         23 |         25 |          6 |         54 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\lib\functions.js     | JavaScript |          4 |          7 |          1 |         12 |
+| Total                                                                  |            |        273 |        319 |         99 |        691 |
++------------------------------------------------------------------------+------------+------------+------------+------------+------------+

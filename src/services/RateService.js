@@ -1,7 +1,8 @@
 import { RateFetcher } from '@jl225vf/exr'
 import { stringToArray } from './lib/functions.js'
-import { AverageRate } from './lib/Average.js'
+import { AverageRate } from './lib/AverageRate.js'
 
+export const rateFetcher = new RateFetcher() // export for testing purposes
 /**
  * Service for fetching exchange rates.
  */
@@ -13,7 +14,7 @@ export class RateService {
    *
    * @param {RateFetcher} fetcher - class that fetches data from the Norway API.
    */
-  constructor (fetcher = new RateFetcher()) {
+  constructor (fetcher=rateFetcher) {
     this.#fetcher = fetcher
   }
 
@@ -74,7 +75,8 @@ export class RateService {
    * @returns {Promise<object>} The exchange rates.
    */
   async getLatest (currencies, observations = 1) {
-    const rates = await this.#fetcher.fetchLatest({ currencies: stringToArray(currencies), observations })
+    const rates = await this.#fetcher.fetchLatest({ currencies: stringToArray(currencies)}, observations)
+
     return this.#calculateAverage(rates)
   }
 
