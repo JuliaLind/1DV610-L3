@@ -7,6 +7,7 @@
 import './form/conversion-form.js'
 import './form/checkable-option.js'
 import { ApiService } from '../services/ApiService.js'
+import { CurrencyCalculator } from '../services/CurrencyCalculator.js'
 
 const template = document.createElement('template')
 
@@ -51,6 +52,7 @@ customElements.define('main-view',
     #form
     #abortController = new AbortController()
     #apiService = new ApiService(import.meta.env.BASE_URL || '/')
+    #calculator = new CurrencyCalculator()
 
     /**
      * Creates an instance of current class.
@@ -68,17 +70,32 @@ customElements.define('main-view',
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
     async connectedCallback () {
+      this.#addEventListeners()
       await this.#prepareForm()
     }
 
-    addEventListeners () {
+    /**
+     * Prepares the form by fetching currencies and rendering options.
+     */
+    async #prepareForm () {
+      const currencies = await this.#fetchCurrencies()
+
+      if (currencies) {
+        this.#form.renderCurrencyOptions(currencies)
+      }
+    }
+
+    /**
+     * Adds event listeners to the form.
+     */
+    #addEventListeners = () => {
       this.#form.addEventListener('submit', this.#onSubmit, { signal: this.#abortController.signal })
     }
 
     /**
      * Fetches the list of available currencies from the API.
      *
-     * @returns {Array} - a list of currency objects containing currency name and currency id
+     * @returns {Promise<Array>} - a list of currency objects containing currency name and currency id
      */
     async #fetchCurrencies () {
       try {
@@ -103,28 +120,60 @@ customElements.define('main-view',
     }
 
     /**
-     * Prepares the form by fetching currencies and rendering options.
+     * Handles the form submit event.
+     *
+     * @param {Event} event - the submit event
      */
-    async #prepareForm () {
-      const currencies = await this.#fetchCurrencies()
-
-      if (currencies) {
-        this.#form.renderCurrencyOptions(currencies)
-      }
-    }
-
     #onSubmit = async (event) => {
       event.preventDefault()
+      this.#prepareCalculator(event.detail)
 
-      const results = await this.#apiService.submitConversion(event.detail)
+      if (!this.#calculator.hasCachedRates() || !this.#calculator.hasFreshRates()) {
+        await this.#refreshRates()
+      }
+
+      const results = this.#calculator.getValues()
       this.#renderResults(results)
     }
 
+    /**
+     * Prepares the calculator with the form data.
+     *
+     * @param {object} formData - The form data containing amount, base, and targets,
+     * submitted by the user.
+     */
+    #prepareCalculator = (formData) => {
+      const { amount, base, targets } = formData
+
+      this.#calculator.setAmount(amount)
+      this.#calculator.setBaseCurrency(base)
+      this.#calculator.setTargetCurrencies(targets)
+    }
+
+    /**
+     * Refreshes the exchange rates in the calculator.
+     */
+    #refreshRates = async () => {
+      const reqParams = {
+        amount: 1, // get rates for 1 unit of base currency to avoid extra API requests for just amount changes
+        base: this.#calculator.getBaseCurrency(),
+        targets: this.#calculator.getTargetCurrencies()
+      }
+
+      const rates = await this.#apiService.submitConversion(reqParams)
+      this.#calculator.setRates(rates)
+    }
+
+    /**
+     * Renders the results in the table.
+     *
+     * @param {object} results - the conversion results
+     */
     #renderResults (results) {
       const tbody = this.shadowRoot.querySelector('#results tbody')
       tbody.innerHTML = ''
 
-      for (const [currency, value ] of Object.entries(results)) {
+      for (const [currency, value] of Object.entries(results)) {
         const row = this.shadowRoot.querySelector('#tr-template').content.cloneNode(true)
         const currencyCell = row.querySelector('.currency')
         const valueCell = row.querySelector('.value')
