@@ -1,6 +1,6 @@
 import { RateFetcher } from '@jl225vf/exr'
 import { stringToArray } from './lib/functions.js'
-import { RateMerger } from './lib/RateMerger.js'
+import { AverageRate } from './lib/Average.js'
 
 /**
  * Service for fetching exchange rates.
@@ -17,12 +17,22 @@ export class RateService {
     this.#fetcher = fetcher
   }
 
-  mergeRates (ratesObj) {
-    const merger = new RateMerger()
-    const mergedRates = merger.merge(ratesObj)
-    return mergedRates
-  }
+  /**
+   * Calculates average rates from fetched rates.
+   *
+   * @param {object} rates - the rates to calculate averages for
+   * @returns {object} the average rates
+   */
+  #calculateAverage (rates) {
+    const averageRates = {}
 
+    for (const [currency, values] of Object.entries(rates)) {
+      const average = new AverageRate(values)
+      averageRates[currency] = average.getData()
+    }
+
+    return averageRates
+  }
 
   /**
    * Returns exchange rates on specified date
@@ -35,9 +45,9 @@ export class RateService {
    * @returns {Promise<object>} The exchange rates.
    */
   async getByDate ({ date, currencies }, observations = 1) {
-    this.#setCurrencies(currencies)
-    const rates = await this.#fetcher.fetchByDate(date, observations)
-    return this.mergeRates(rates)
+    const rates = await this.#fetcher.fetchByDate({ date, currencies: stringToArray(currencies) }, observations)
+
+    return this.#calculateAverage(rates)
   }
 
   /**
@@ -50,10 +60,10 @@ export class RateService {
    * @returns {Promise<object>} The exchange rates.
    */
   async getByPeriod ({ startDate, endDate, currencies }) {
-    this.#setCurrencies(currencies)
-
-    const rates = await this.#fetcher.fetchByPeriod(startDate, endDate)
-    return this.mergeRates(rates)
+    const rates = await this.#fetcher.fetchByPeriod({
+      startDate, endDate, currencies: stringToArray(currencies)
+    })
+    return this.#calculateAverage(rates)
   }
 
   /**
@@ -64,10 +74,8 @@ export class RateService {
    * @returns {Promise<object>} The exchange rates.
    */
   async getLatest (currencies, observations = 1) {
-    this.#setCurrencies(currencies)
-
-    const rates = await this.#fetcher.fetchLatest(observations)
-    return this.mergeRates(rates)
+    const rates = await this.#fetcher.fetchLatest({ currencies: stringToArray(currencies), observations })
+    return this.#calculateAverage(rates)
   }
 
   /**
@@ -77,14 +85,5 @@ export class RateService {
    */
   async getCurrencies () {
     return await this.#fetcher.getAvailableCurrencies()
-  }
-
-  /**
-   * Sets the currencies to get rates for.
-   *
-   * @param {string} currencies A string of currencies separated by '+', e.g. 'USD+EUR+GBP'
-   */
-  #setCurrencies (currencies) {
-    this.#fetcher.setCurrencies(stringToArray(currencies))
   }
 }

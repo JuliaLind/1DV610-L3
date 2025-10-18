@@ -105,7 +105,7 @@ customElements.define('conversion-form',
     onSubmit = (event) => {
       event.preventDefault()
 
-      const amount = this.#form.querySelector('#amount').value
+      const amount = Number(this.#form.querySelector('#amount').value)
       const base = this.#form.querySelector('#base').value
       const targets = Array.from(this.#form.querySelector('#targets').getAttribute('value'))
 

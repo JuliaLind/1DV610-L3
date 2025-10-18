@@ -9,7 +9,7 @@ export class ApiService {
    *
    * @param {string} baseUrl - the base URL where the API (and current app) is hosted
    */
-  constructor(baseUrl) {
+  constructor (baseUrl) {
     this.#baseUrl = baseUrl
   }
 
@@ -18,14 +18,23 @@ export class ApiService {
    *
    * @returns {Promise<Array>} - a list of currency objects containing currency name and currency id
    */
-  async fetchCurrencies() {
+  async fetchCurrencies () {
     const response = await fetch(`${this.#baseUrl}api/currencies`)
 
     return await this.#fromJson(response)
   }
 
-  async submitConversion(formData) {
-    const { amount, base, targets } = formData
+  /**
+   * Submits a conversion request to the API.
+   *
+   * @param {object} reqParams - the request parameters
+   * @param {number} reqParams.amount - the amount to convert
+   * @param {string} reqParams.base - the base currency
+   * @param {Array<string>} reqParams.targets - the target currencies
+   * @returns {Promise<object>} - the conversion results
+   */
+  async submitConversion (reqParams) {
+    const { amount, base, targets } = reqParams
     const url = new URL(`${this.#baseUrl}api/convert/${amount}/${base}/${targets.join('+')}`)
 
     const response = await fetch(url)
@@ -33,7 +42,13 @@ export class ApiService {
     return await this.#fromJson(response)
   }
 
-  async #fromJson(response) {
+  /**
+   * Parses the JSON response from the API.
+   *
+   * @param {Response} response - the fetch response
+   * @returns {Promise<object>} - the parsed JSON data
+   */
+  async #fromJson (response) {
     const data = await response.json()
 
     if (!response.ok) {
