@@ -28,14 +28,18 @@ export class ApiController {
     this.#conversionService = dependencies?.conversionService || new ConversionService()
   }
 
+  /**
+   * Converts an error to an HTTP error.
+   *
+   * @param {Error} error - the error to convert
+   * @returns {Error} The HTTP error.
+   */
   #makeHttpError (error) {
     if (createError.isHttpError(error)) {
-      console.log('was http error')
       return error
     }
 
     if (error.code) {
-      console.log('was custom error')
       return createError(error.code, error.message)
     }
 

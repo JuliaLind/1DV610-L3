@@ -1,25 +1,23 @@
+/* global after, before */
+
 import * as chai from 'chai'
 import request from 'supertest'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 
-
 import { app } from '../../src/server.js'
 import { rateFetcher } from '../../src/services/RateService.js'
-
+import { calculateAverage } from '../utils/functions.js'
 
 chai.use(sinonChai)
 const { expect } = chai
 
-
-describe('scenario - latest', () => {
+describe('e2e - latest', () => {
   let fetcherStub
-
 
   before(() => {
     fetcherStub = sinon.stub(rateFetcher, 'fetchLatest')
   })
-
 
   after(() => {
     sinon.restore()
@@ -30,7 +28,6 @@ describe('scenario - latest', () => {
     fetcherStub.resetBehavior()
   })
 
-
   it('average based on one observation: latest/DKK+EUR', async function () {
     const rates = {
       DKK: {
@@ -38,7 +35,7 @@ describe('scenario - latest', () => {
       },
       EUR: {
         '2025-09-19': 11.6705
-      },
+      }
     }
 
     fetcherStub.resolves(rates)
@@ -88,9 +85,8 @@ describe('scenario - latest', () => {
           '2025-02-24': 11.6355,
           '2025-02-25': 11.6638,
           '2025-02-26': 11.6895
-        },
+        }
       }
-
 
       fetcherStub.resolves(rates)
       const exp = {

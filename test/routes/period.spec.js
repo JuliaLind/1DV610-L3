@@ -1,25 +1,23 @@
+/* global after, before */
+
 import * as chai from 'chai'
 import request from 'supertest'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 
-
 import { app } from '../../src/server.js'
 import { rateFetcher } from '../../src/services/RateService.js'
-
+import { calculateAverage } from '../utils/functions.js'
 
 chai.use(sinonChai)
 const { expect } = chai
 
-
-describe('scenario - period', () => {
+describe('e2e - period', () => {
   let fetcherStub
-
 
   before(() => {
     fetcherStub = sinon.stub(rateFetcher, 'fetchByPeriod')
   })
-
 
   after(() => {
     sinon.restore()
@@ -30,14 +28,7 @@ describe('scenario - period', () => {
     fetcherStub.resetBehavior()
   })
 
-
-
   it('average period: period/2025-02-20/2025-02-26/DKK+EUR', async function () {
-    function calculateAverage(values) {
-      const sum = values.reduce((acc, val) => acc + val, 0)
-      return Number((sum / values.length).toFixed(4))
-    }
-
     const rates = {
       DKK: {
         '2025-02-20': 1.5564,
@@ -52,9 +43,8 @@ describe('scenario - period', () => {
         '2025-02-24': 11.6355,
         '2025-02-25': 11.6638,
         '2025-02-26': 11.6895
-      },
+      }
     }
-
 
     fetcherStub.resolves(rates)
     const exp = {
@@ -88,7 +78,6 @@ describe('scenario - period', () => {
     )
   })
 
-  
   it('missing currencies: period/2025-02-20/2025-02-26 Not OK 404', async function () {
     await request(app)
       .get('/api/v1/period/2025-02-20/2025-02-26')
@@ -102,12 +91,12 @@ describe('scenario - period', () => {
 
     const error = new Error(message)
     error.code = 400
-    
+
     fetcherStub.rejects(error)
 
     const exp = {
       status_code: 400,
-      message: message
+      message
     }
 
     await request(app)

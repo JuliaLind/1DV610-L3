@@ -1,25 +1,24 @@
+/* global after, before */
+
 import * as chai from 'chai'
 import request from 'supertest'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 
-
 import { app } from '../../src/server.js'
 import { rateFetcher } from '../../src/services/RateService.js'
 
+import { calculateAverage } from '../utils/functions.js'
 
 chai.use(sinonChai)
 const { expect } = chai
 
-
-describe('scenario - date', () => {
+describe('e2e - date', () => {
   let fetcherStub
-
 
   before(() => {
     fetcherStub = sinon.stub(rateFetcher, 'fetchByDate')
   })
-
 
   after(() => {
     sinon.restore()
@@ -30,7 +29,6 @@ describe('scenario - date', () => {
     fetcherStub.resetBehavior()
   })
 
-
   it('average based on one observation: date/2025-09-19/DKK+EUR', async function () {
     const rates = {
       DKK: {
@@ -38,7 +36,7 @@ describe('scenario - date', () => {
       },
       EUR: {
         '2025-09-19': 11.6705
-      },
+      }
     }
 
     fetcherStub.resolves(rates)
@@ -75,11 +73,6 @@ describe('scenario - date', () => {
   })
 
   it('average based on five observations: date/2025-02-26/DKK+EUR?observations=5', async function () {
-    function calculateAverage(values) {
-      const sum = values.reduce((acc, val) => acc + val, 0)
-      return Number((sum / values.length).toFixed(4))
-    }
-
     const rates = {
       DKK: {
         '2025-02-20': 1.5564,
@@ -94,9 +87,8 @@ describe('scenario - date', () => {
         '2025-02-24': 11.6355,
         '2025-02-25': 11.6638,
         '2025-02-26': 11.6895
-      },
+      }
     }
-
 
     fetcherStub.resolves(rates)
     const exp = {
@@ -131,7 +123,6 @@ describe('scenario - date', () => {
     )
   })
 
-  
   it('missing currencies: date/2025-02-26/?observations=5 Not OK 404', async function () {
     await request(app)
       .get('/api/v1/date/2025-02-26/?observations=5')
@@ -140,7 +131,7 @@ describe('scenario - date', () => {
     expect(fetcherStub).to.not.have.been.called
   })
 
-    it('missing date: date/DKK+EUR/?observations=5 Not OK 404', async function () {
+  it('missing date: date/DKK+EUR/?observations=5 Not OK 404', async function () {
     await request(app)
       .get('/api/v1/date/DKK+EUR/?observations=5')
       .expect(404)

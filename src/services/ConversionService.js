@@ -1,6 +1,8 @@
 import { CurrencyConverter } from '@jl225vf/exr'
 import { stringToArray } from './lib/functions.js'
 
+export const converter = new CurrencyConverter() // export for testing purposes
+
 /**
  * Conversion service for converting amounts between currencies.
  */
@@ -16,11 +18,9 @@ export class ConversionService {
    * @returns {Promise<object>} The conversion result.
    */
   async convertOne ({ amount, baseCurrency, targetCurrencies }) {
-    const converter = new CurrencyConverter()
-
     converter.setBaseCurrency(baseCurrency)
     converter.setTargetCurrencies(stringToArray(targetCurrencies))
 
-    return await converter.convert(amount)
+    return await converter.convert(Number(amount))
   }
 }
