@@ -7,6 +7,7 @@
 
 import { RateService } from '../services/RateService.js'
 import { ConversionService } from '../services/ConversionService.js'
+import createError from 'http-errors'
 
 /**
  * Handles API requests
@@ -27,6 +28,20 @@ export class ApiController {
     this.#conversionService = dependencies?.conversionService || new ConversionService()
   }
 
+  #makeHttpError (error) {
+    if (createError.isHttpError(error)) {
+      console.log('was http error')
+      return error
+    }
+
+    if (error.code) {
+      console.log('was custom error')
+      return createError(error.code, error.message)
+    }
+
+    return createError(500, 'Internal Server Error')
+  }
+
   /**
    * Handles requests to get exchange rates by date.
    *
@@ -40,7 +55,7 @@ export class ApiController {
 
       res.json(rates)
     } catch (error) {
-      next(error)
+      next(this.#makeHttpError(error))
     }
   }
 
@@ -57,7 +72,7 @@ export class ApiController {
 
       res.json(rates)
     } catch (error) {
-      next(error)
+      next(this.#makeHttpError(error))
     }
   }
 
@@ -74,7 +89,7 @@ export class ApiController {
 
       res.json(rates)
     } catch (error) {
-      next(error)
+      next(this.#makeHttpError(error))
     }
   }
 
@@ -91,7 +106,7 @@ export class ApiController {
 
       res.json(currencies)
     } catch (error) {
-      next(error)
+      next(this.#makeHttpError(error))
     }
   }
 
@@ -108,7 +123,7 @@ export class ApiController {
 
       res.json(converted)
     } catch (error) {
-      next(error)
+      next(this.#makeHttpError(error))
     }
   }
 }

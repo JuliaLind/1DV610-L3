@@ -1,4 +1,4 @@
-import * as chai from 'chai'          // <-- namespace import (no default export in Chai v5)
+import * as chai from 'chai'
 import request from 'supertest'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
@@ -70,11 +70,11 @@ describe('scenario - date', () => {
 
     expect(fetcherStub).to.have.been.calledWith(
       { date: '2025-09-19', currencies: ['DKK', 'EUR'] },
-      1
+      '1'
     )
   })
 
-  it('average based on one observation: date/2025-02-26/DKK+EUR?observations=5', async function () {
+  it('average based on five observations: date/2025-02-26/DKK+EUR?observations=5', async function () {
     function calculateAverage(values) {
       const sum = values.reduce((acc, val) => acc + val, 0)
       return Number((sum / values.length).toFixed(4))
@@ -129,5 +129,22 @@ describe('scenario - date', () => {
       { date: '2025-02-26', currencies: ['DKK', 'EUR'] },
       '5'
     )
+  })
+
+  
+  it('missing currencies: date/2025-02-26/?observations=5 Not OK 404', async function () {
+    await request(app)
+      .get('/api/v1/date/2025-02-26/?observations=5')
+      .expect(404)
+
+    expect(fetcherStub).to.not.have.been.called
+  })
+
+    it('missing date: date/DKK+EUR/?observations=5 Not OK 404', async function () {
+    await request(app)
+      .get('/api/v1/date/DKK+EUR/?observations=5')
+      .expect(404)
+
+    expect(fetcherStub).to.not.have.been.called
   })
 })

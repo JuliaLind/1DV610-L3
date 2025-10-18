@@ -1,6 +1,7 @@
 import { RateFetcher } from '@jl225vf/exr'
 import { stringToArray } from './lib/functions.js'
 import { AverageRate } from './lib/AverageRate.js'
+import { HttpError } from 'http-errors'
 
 export const rateFetcher = new RateFetcher() // export for testing purposes
 /**

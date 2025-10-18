@@ -1,4 +1,4 @@
-import * as chai from 'chai'          // <-- namespace import (no default export in Chai v5)
+import * as chai from 'chai'
 import request from 'supertest'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
