@@ -1,28 +1,25 @@
 # Reflektion  
 
-Efter att ha reflekterat kring koden i L2 samt fått feedback från medstudenter skrev jag om merparten av de privata delarna i modulen, samt några va de publika metoderna  (vilket förstås följdes av publicering av ny major version eftersom det påverkade bakåtkompatibilitet).
+Efter att ha analyserat koden i L2 och fått feedback från medstudenter genomförde jag en ganska omfattande refaktorering av merparten av de privata delarna i L2-modulen, samt vissa publika metoder. Jag har förstås sett till att nya versioner som jag publicerat på npm följt principerna för semantic versioning, där ändringar i publika metoder som påverkar bakåtkompatibiliteten medfört publicering av en ny major version av modulen.
 
 ## Kapitel 2  - Meaningful Names
 
-Jag har skrivit om onödiga förkortningar i modulen till motsvarande längre variant som gör koden lättare för utomstående att sätta sig in i. Till exempel har jag änrat har ändrat namn på metoden #prep() till #prepareRates(). I vissa fall har behållit förkortning.  
+Jag har skrivit om onödiga förkortningar i modulen till längre, mer beskrivande namn som gör koden lättare för andra att förstå. Till exempel har jag ändrat metodnamnet #prep() till #prepareRates(). I vissa fall har jag dock behållit förkortningar där de känts vedertagna och tydliga i sammanhanget.  
 
-Jag har också ändrat vissa metodnamn för att höja abstraktionsnivån och bättre representera metodens övergripande ansvar.  
+Jag har även ändrat på namn som kunde vara missvisande. Till expempel hade jag en metod som hette #isReady(), men den returnerade inte en boolean, utan kastade ett fel om klassen inte var redo. Jag misstänker att jag ursprungligen tänkte att den skulle returnera ett booleanvärde, men ändrade mig under arbetets gång. Metoden bytte jag därför namn på till #alertIfNotReady(), vilket tydligare visar att den utför en handling i stället för att returnera ett värde.    
 
-Jag har även ändrat på namn som kunde vara missvisande. Till expempel hade jag en metod som hette #isReady(), men den returnerade inte ett boolan utan kastade ett fel om klassen inte var "redo". Jag misstänker att jag ursprungligen tänkte att den skulle returnera en boolean men sedan ändrade mig - den metoden bytte jag namn på till #alertIfNotReady(), vilket då blir tydligare att metoden gör något och inte returnerar ett värde.
+Överlag tycker jag att min kod följer bokens namngivningsregler väl. Även om jag ibland tycker att det är svårt att hitta namn som är både korta och beskrivande (kanske på grund av begränsat ordförråd eller fantasi), har jag varit noga med att följa de övriga principerna: inga onödiga prefix, interna termer eller förkortningar, ingen typinformation i variabelnamn, samt namn som är sökbara och konsekventa.  
 
+Jag undviker generellt korta namn, även i lokala block föredrar jag att använda tydliga variabelnamn, till och med i for-loopar. Det handlar inte bara om sökbarhet, utan också om att det annars kan bli svårt att hålla isär vad man faktiskt itererar över, särskilt i kod med flera loopar eller nästlade strukturer. Det märktes extra tydligt i denna uppgift, eftersom Norges API har en ganska komplex och nästlad svarstruktur.  
 
-Överlag tycker jag att min kod följer namnreglerna bra. Även om jag ibland upplever det som svårt att hitta korta men samtidigt beskrivande namn (kanske brist på ordförråd eller fantasi), har jag ändå varit noga med att följa de andra reglerna: inga onödiga prefix, interna termer eller förkortningar, ingen typ i variabelnamn, samt sökbara namn.
+Just det här med prefix funderade jag extra på när jag skapade egna komponenter. Custom components måste bestå av minst två ord med bindestreck mellan, för att undvika framtida konflikter med eventuella nya html element. I tidigare kurser har vi fått lära oss att ett sätt att undvika krockar är att prefixa sina komponenter, till exempel med sina initialer, som jl-table. På så sätt minskar man risken att ens egna element krockar med andras. Samtidigt motsäger det regeln om att undvika prefix, vilket gör det lite klurigt att avgöra vad som är mest konsekvent. I denna uppgift valde jag att följa bokens rekommendationer och inte använda prefix.   
 
-Jag undviker överlag korta namn, även i lokala block föredrar jag att ge variabler tydliga namn, till och med i for-loopar. Det handlar inte bara om sökbarhet, utan också om att det kan bli svårt att hålla isär vad man faktiskt loopar igenom när man har flera loopar, även om de är uppdelade i olika subfunktioner. Det märktes särskilt i den här uppgiften, eftersom Norges API har en ganska komplex och nästlad struktur i sina svar.
-
-Just det här med prefix funderade jag dock extra på när jag skapade egna komponenter. Custom components måste ju bestå av minst två ord med bindestreck mellan (för att undvika framtida konflikter med eventuella nya HTML-element). I tidigare kurser har vi fått lära oss att ett sätt att undvika krockar är att prefixa sina custom element, till exempel med sina initialer, e.g. jl-table. På så sätt minskar man risken att ens egna element krockar med andras. Samtidigt motsäger det ju regeln om att undvika prefix, vilket gör det lite klurigt att avgöra vad som är mest konsekvent. I denna uppgift valde jag att följa bokens regler och inte prefixa. 
-
-Jag har även försökt följa regeln om “one word per concept”, men kom flera gånger på mig själv med att fundera över om vissa ord egentligen beskriver samma koncept eller inte. Ett exempel är fetch och get. get används ju ofta för att hämta ut attribut (accessor), men i tidigare kurser har vi lärt oss att controllerns metoder kan döpas efter de anrop de hanterar. Till exempel get för GET-request och post för POST-request. När jag har metoder som anropar ett API känns det mest naturligt att använda fetch. Men om jag ska hämta data och endast anropar API:et om datan inte redan finns cachad, ska det då heta get eller fetch? Likaså, om metoden gör en GET-request till API:et kanske den bör heta get, även om det är den enda metoden som kommunicerar med API:et. Då slipper man behöva döpa om den om det tillkommer en post-metod längre fram. Just dessa två begrepp har jag nog inte varit helt konsekvent med, även om jag har försökt att vara det.
+Jag har även försökt följa regeln om "one word per concept", men kom flera gånger på mig själv med att fundera över om vissa ord egentligen beskriver samma koncept eller om det är olika koncept.  Ett exempel är fetch och get. get används normalt sett för att hämta värden från privata attribut (accessors), men i tidigare kurser har vi lärt oss att controller-metoder ofta döps efter de http-anrop de hanterar, till exempel get för get-request och post för post-request. När jag har metoder som anropar ett API känns det mest naturligt att använda fetch. Men om jag ska hämta data och bara anropar API:et om datan inte redan finns cachad, ska det då heta get eller fetch? Likaså, om metoden gör en get-request till API:et kanske den bör heta get, även om det är den enda metoden som kommunicerar med API:et. Då undviker man att behöva döpa om den i framtiden om det tillkommer en post-metod. Å andra sidan skulle det kanske vara ett tillfälle att använda polymorfism, där Get och Post är två klasser som båda har en metod som heter fetch. På så sätt blir begreppet mer enhetligt, samtidigt som implementationen skiljer sig åt beroende på kontext. Just get och fetch har jag nog inte varit helt konsekvent med i denna uppgift (och i tidigare uppgifter), även om jag har försökt att tänka att jag skulle vara det.
 
 
 ## Kapitel 3  - Functions
 
-Jag har justerat abstraktionsnivån genom att plocka ut delar som låg på längre abstraktionsnivå än andra delar i metoden. T ex har
+Jag har justerat abstraktionsnivån i min kod genom att plocka ut delar som låg på en annan nivå än övriga delar i metoden. Till exempel har:
 
 ```js
   /**
@@ -45,7 +42,7 @@ Jag har justerat abstraktionsnivån genom att plocka ut delar som låg på läng
   }
 ```
 
-blivit
+blivit:
 
 ```js
   /**
@@ -86,24 +83,30 @@ blivit
     this.#normalizer.normalize(rates)
   }
 ```
+Den här refaktoreringen gör att varje metod följer signle-responsibility principle - "Do one thing" ur boken. Den nya strukturen gör också att koden kan läsas uppifrån och ned som en berättelse, vilket ligger helt i linje med författarens Step-Down regel.  
 
-Jag har alltså även funderat över detta med argument och när det passar och inte passar att sätta dessa som medlemsvariabler istället för att skicka in som argument till metod. Jag kom fram till att om det är en variabel som behöver accessas from flera metoder så ska den sättas som attribut. Medan om det är en variabel som bara används i en metod, och antal argument dessutom inte är så stor, så blir det i mitt tycker med cleancode att skriva 
+Jag har även funderat över när det är mest lämpligt att använda argument respektive medlemsvariabler. Jag kom fram till att om en variabel behöver nås från flera metoder, ska den sättas som attribut. Men om den bara används i en enskild metod och antalet argument är rimligt, blir det enligt min mening renare och tydligare att skicka in den som parameter.
+
+Till exempel tycker jag att följande variant:
 
 ```js
 const rates = await this.#fetcher.fetchLatest(this.#getRequestParams())
 ```
 
-än 
+är bättre än:
 
 ```js
     this.#fetcher.setCurrencies([this.#fromCurrency, ...this.#toCurrencies])
     const rates = await this.#fetcher.fetchLatest()
 ```
 
-eftersom fetchLatest() metoden då direkt får allt den behöver istället för att förlita sig på att setCurrencies() blivit anropad innan.  Men det tänket i bakhuvudet är jag rätt nöjd med refaktoreringen jag gjort, som egentligen gått åt båda hållen - i vissa fall, som i ovan, har jag byttt från attribut till inparametrar, och i andra fall har jag använt attribut istället för inparametrar. Överlag tycker jag att koden blev mycket mer lästbar när man tittade ur helhetsperspektiv istället för att strikt följa regeln om antal argument.  
+I det första exemplet får metoden allt den behöver direkt, utan att förlita sig på att en annan metod har anropats i förväg.  
 
-Det var en metod som jag tyckte var särskilt svår att skriva om, men där löste jag refaktoreringen just genom att assigna rates som ett attribut,
-och det blev då enkelt att separara ut delar till olika metoder utan att behöva "släpa" vidare parametrar från en metod in i nästa.
+Med det tänket i bakhuvudet är jag nöjd med den refaktorering jag gjort. Ibland har jag bytt från attribut till inparametrar och ibland tvärtom. Överlag blev koden betydligt mer läsbar när jag såg till helheten i stället för att strikt följa bokens rekommendation om att antal argument helst ska vara 0.  
+
+En metod som jag upplevde som särskilt svår att skriva om var den som hanterar normalisering av valutakurser. Där löste jag det genom att tilldela rates (dvs initiala valutakurser) som ett attribut. Det gjorde det möjligt att dela upp logiken i flera mindre metoder utan att behöva "släpa med" parametrar mellan anrop.
+
+Ursprunglig kod:  
 
 ```js
   /**
@@ -125,7 +128,7 @@ och det blev då enkelt att separara ut delar till olika metoder utan att behöv
   }
 ```  
 
-Efter refaktorering blev koden:
+Efter refaktorering:  
 
 ```js
  /**
@@ -195,11 +198,11 @@ Efter refaktorering blev koden:
 
 ```
 
-Man kan förstås argumentera för att setOriginalRates ocg getBaseRate är på lägre abstraktionsnivå än reset() och rebaseRates() men jag kan inte riktigt se hur man skulle kunna abstrahera bort det ännu mer.  
+Man kan förstås argumentera för att #setOriginalRates() och #getBaseRate() ligger på en något lägre abstraktionsnivå än reset() och #rebaseRates(), men jag ser ingen rimlig väg att abstrahera bort dessa ytterligare utan att försämra tydligheten.  
 
-När det kommer till storlek på metod och komplexitet tycket jag att min kod ligger ganska bra till. Jadg har inga långa metoder och skulle säga att överlag har jag inte mer än 2 "indrag", och det är inte på många ställen det heller.  Efter inlämningen skrev jag också om koden från loopar med if/else till att använda map, find och filter, vilket i sig minskar antal förgreningar och blir mer läsbart.
+När det gäller metodstorlek och komplexitet tycker jag att min kod nu ligger bra till. Jag har inga långa metoder och sällan mer än två indrag. Efter inlämningen skrev jag dessutom om delar av koden från loopar med if/else till att använda moderna metoder som map, find och filter. Det minskar antalet förgreningar och gör koden mer deklarativ och lättläst.  
 
-T ex
+Till exempel:  
 
 ```js
   /**
@@ -253,16 +256,177 @@ blev
 
 ```
 
-Jag valde att använda map här, eftersom det egentligen inte finns något scenario där BASE_CUR-dimensionen skulle saknas i datan från API:et... om inte all data saknas, förstås.
+Jag valde att använda map här eftersom det egentligen inte finns något scenario där BASE_CUR-dimensionen saknas i datan från API:et... om inte all data saknas, förstås, men i det fallet kommer ett fel att kastas redan från klassen som hanterar fetch-requesten till APIet.
 
-I den typ av loop med "early return" som jag hade initialt uppstår problemet att man efter loopen måste antingen explicit returnera undefined eller kasta ett fel. Jag tycker att detta blir missvisande i koden, eftersom det kan få läsaren att tro att attributet faktiskt kan saknas ibland. Funktionellt sett behöver man förstås varken kasta ett fel eller returnera undefined, men Scrutinizer, som är ett statiskt kodkvalitetsverktyg jag arbetat med lite grann i tidigare kurser, brukar anmärka på om bara vissa att "vägarna" i en metod har en return sats.
+I den typ av loop med "early return" som jag hade tidigare uppstår problemet att man efter loopen måste explicit returnera undefined eller kasta ett fel. Jag tycker det blir missvisande eftersom det kan få läsaren att tro att attributet ibland saknas. Funktionellt sett behövs förstås inte något explicit returvärde i form av undefined , eftersom det är vad JavaScript automatiskt returnerar om inget värde anges, men det statiska analysverktyget Scrutinizer, som jag använt i tidigare kurs, brukar påpeka att det är "bad practice" om bara vissa exekveringsvägar av samma metod innehåller en return-sats. Att då använda map istället, kommer runt den problematiken. 
+  
+Cloner som används i koden är en egen DeepCloner-klass, som rekursivt gör en deep copy av objektet och alla underobjekt. På så sätt undviker jag sidoeffekter och att data kan modifieras utanför den klass där den hör hemma.  
+  
+Genom att extrahera metoden #isTargetCurrency följer jag även här Single Responsibility Principle (SRP). #setTargetCurrencies tillsätter attributet, medan #isTargetCurrency avgör vilka element som ska väljas.    
 
-Cloner som används i koden är en egen DeepCloner-klass som rekursivt gör en deep copy av objektet och alla underobjekt. På så sätt undviker jag sidoeffekter och att data kan modifieras utanför den klass där den hör hemma.
 
-Genom att extrahera metoden #isTargetCurrency följer jag även Single Responsibility Principle (SRP) -  #setTargetCurrencies tillsätter attributet, medan #isTargetCurrency avgör vilka element som ska väljas.
-## Kapitel 4
+## Kapitel 4 - Comments
 
-## Kapitel 5
+Innan jag går in på mina reflektioner kring det här kapitlet vill jag bara påpeka att vid beräkning av kodrader var över 50 % av den totala koden kommentarer. Och detta beror inte på något medvetet val från min sida, utan på att ESLint tvingar en att vara onödigt explicit. Setters, getters, privata metoder - ESLint tycker att precis allt behöver kommenteras, och gärna på flera olika sätt.
+
+Exempel:
+
+```js
+  /**
+   * Gets the date indices for the observations.
+   *
+   * @returns {Array<number>} - The date indices.
+   */
+  #getDateIndices () {
+    return Object.keys(this.#observations)
+  }
+
+  /**
+   * Gets the observation date for a specific index.
+   *
+   * @param {number} dateIndex - The index of the date to get.
+   * @returns {string} - The observation date.
+   */
+  #getObservationDate (dateIndex) {
+    return this.#dates[Object.keys(this.#dates)[dateIndex]]
+  }
+
+```
+
+Om jag hade fått välja själv hade jag hoppat över antingen beskrivningen av metoden eller beskrivningen av parametrar och returvärde.. att ha med båda känns som upprepning. Ännu mer onödigt känns det att kommentera getters för icke-beräknade egenskaper, till exempel:
+
+```js
+
+  /**
+   * Gets the currency id.
+   *
+   * @returns {string} - The currency id, for example 'USD'.
+   */
+  getId () {
+    return this.#id
+  }
+```
+Detta är ett tydligt exempel på det som författaren beskriver under Redundant Comments, och mer specifikt Mandated och Noise Comments. Eftersom denna linter har varit obligatorisk i tidigare kurser vågade jag inte frångå reglerna, men min åsikt är att sådana kommentarer mest blir distraherande. De gör filerna längre och svårare att överblicka, och tar tid att läsa utan att tillföra något nytt.  
+
+Författaren lyfter också ett viktigt argument: koden förändras, men kommentarer glöms ofta bort. Om de inte uppdateras blir de snabbt missvisande och skapar förvirring i stället för klarhet. I slutändan är koden den enda sanna källan till information - "truth can only be found in the code."  
+
+Förutom de påtvingade kommentarerna från ESLint har jag i princip inga inline-kommentarer, bara på ett fåtal ställen i koden. Till exempel:  
+
+```js
+export const app = createApp(router) // exported for testing purposes
+startApp(app)
+```
+och
+
+```js
+  /**
+   * Converts a single quote to the target currencies.
+   *
+   * @param {object} quote - The quote to convert.
+   * @returns {object} - The conversion results for the quote.
+   */
+  #convertOne(quote) {
+    const calculated = {
+      NOK: quote.NOK
+    }
+
+    for (const currency of this.#targetCurrencies) {
+      const rate = this.#rates[currency][quote.date]
+
+      if (rate) { // some rates do not have values for all dates, for example RUB
+        calculated[currency] = round(quote.NOK / rate)
+      }
+    }
+
+    return calculated
+  }
+```  
+
+Detta ligger helt i linje med det författaren kallar Explanation of Intent, det vill säga kommentarer som förklarar varför något görs, inte vad koden gör. I det här fallet är kommentaren nödvändig eftersom den beskriver en särskild avvikelse (att anledningen till att app exporteras är för att importera i testerna, eller att vissa valutor saknar värden för vissa datum) som inte går att uttrycka direkt i koden.  
+
+Om jag stöter på kod som kräver eftertanke för att förstå, försöker jag hellre bryta ut den i en metod med beskrivande namn än att lägga till en kommentar. På så sätt blir koden självförklarande och enklare att läsa. Till exempel i följande kod:  
+
+```js
+  /**
+   * Sets the target currencies for conversion.
+   * If the currencies are changed, cached rates are cleared.
+   *
+   * @param {string[]} values - The currency codes to set as target currencies.
+   */
+  setTargetCurrencies (values) {
+    if (this.#isTargetChanged(values)) {
+      this.#normalizer.reset()
+    }
+
+    this.#targetCurrencies = values
+  }
+
+  /**
+   * Checks if the target currencies have changed.
+   *
+   * @param {string[]} newValue - The new target currencies.
+   * @returns {boolean} - True if the target currencies have changed, false otherwise.
+   */
+  #isTargetChanged (newValue) {
+    return this.#targetCurrencies.length > 0 && !this.#hasSameCurrencies(newValue, this.#targetCurrencies)
+  }
+
+
+```
+
+Detta följer tydligt författarens princip "Don’t use a comment when you can use a function or a variable."
+Ett tydligt metodnamn gör mer nytta än en kommentar.  
+
+Ett annat exempel från min kod där jag försökt skriva tydlig, självdokumenterande kod är:  
+
+```js
+  /**
+   * Validates that the necessary data is set for conversion.
+   *
+   * @throws {Error} if rates are not set or amount is invalid
+   */
+  #validate () {
+    if (!this.hasCachedRates()) {
+      throw new Error('Rates have not been set.')
+    }
+
+    if (!this.#isValidAmount()) {
+      throw new Error('Invalid amount.')
+    }
+  }
+
+  /**
+   * Checks if there are cached rates.
+   *
+   * @returns {boolean} - true if there are cached rates
+   */
+  hasCachedRates () {
+    return Object.keys(this.#rates).length > 0
+  }
+
+
+  /**
+   * Checks if the amount is valid.
+   *
+   * @returns { boolean } - true if the amount is valid
+   */
+  #isValidAmount () {
+    return this.#amount && !Number.isNaN(Number(this.#amount))
+  }
+
+
+```
+
+Här blir det tydligt vad som valideras, utan att läsaren behöver funder på exempelvis vad "Object.keys(this.#rates).length > 0" innebär i sammanhanget .  
+
+Författaren tar även upp TODO comments, något jag själv ofta använder. Jag kommer ofta på idéer medan jag kodar och skriver små notiser till mig själv direkt i koden. Det gör det enkelt att minnas mina tankar och snabbt hitta tillbaka till rätt plats. Jag går också igenom dessa regelbundet, vilket författaren rekommenderar. När jag arbetar ensam tycker jag att det är helt okej att lämna TODO-kommentarer, men i gemensamma projekt försöker jag hålla nere antalet för att undvika störmoment.   
+
+När det gäller commented-out code känner jag igen mig i författarens beskrivning. Jag har tidigare låtit gammal kod ligga kvar under utvecklingen för att kunna jämföra med nya lösningar, eftersom det underlättar debugging om något slutar fungera efter en kodändring, särskilt vid refaktorisering av kod som inte har full täckning (coverage). Samtidigt förstår jag varför man inte bör göra så. Kommenterad kod skapar snabbt oreda och kan förvirra andra utvecklare. Jag håller med författaren om att versionshantering fyller samma syfte, och därtill passar bättre i sammanhang där flera personer arbetar i samma kodbas.  
+
+Boken nämner också några regler som inte var direkt relevanta för min kod, till exempel kommentarer i html, överflödig fakta eller kommentarer som ligger för långt ifrån den kod de beskriver. I det stora hela tycker jag dock att författaren fångar precis det jag själv upplever - att kommentarer i de flesta fall är onödiga och tidskrävande: tid att skriva, ännu mer tid att underhålla, och merparten av denna kommer med största sannolikhet inte att läsas av nästa person (förutsatt att koden är tillräckligt välskriven).  
+
+
+## Kapitel 5 - Formatting
 
 ## Kapitel 6
 

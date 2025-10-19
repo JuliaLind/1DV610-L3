@@ -143,14 +143,6 @@ export class CurrencyCalculator {
     this.#date = null
   }
 
-  /**
-   * Checks if there are cached rates.
-   *
-   * @returns {boolean} - true if there are cached rates
-   */
-  hasCachedRates () {
-    return Object.keys(this.#rates).length > 0
-  }
 
   /**
    * Checks if the cached rates are from today.
@@ -160,6 +152,19 @@ export class CurrencyCalculator {
    */
   hasFreshRates (date) {
     return this.#date === this.#dateToString(date)
+  }
+
+
+
+  /**
+   * Get the converted values of the amount in the target currencies.
+   *
+   * @returns {object} - values of the amount in the target currencies
+   */
+  getValues () {
+    this.#validate()
+
+    return this.#convertAll()
   }
 
   /**
@@ -178,23 +183,22 @@ export class CurrencyCalculator {
   }
 
   /**
+   * Checks if there are cached rates.
+   *
+   * @returns {boolean} - true if there are cached rates
+   */
+  hasCachedRates () {
+    return Object.keys(this.#rates).length > 0
+  }
+
+
+  /**
    * Checks if the amount is valid.
    *
    * @returns { boolean } - true if the amount is valid
    */
   #isValidAmount () {
     return this.#amount && !Number.isNaN(Number(this.#amount))
-  }
-
-  /**
-   * Get the converted values of the amount in the target currencies.
-   *
-   * @returns {object} - values of the amount in the target currencies
-   */
-  getValues () {
-    this.#validate()
-
-    return this.#convertAll()
   }
 
   /**
