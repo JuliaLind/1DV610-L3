@@ -1,3 +1,18 @@
+:root {
+    --white: #fff;
+    --grey-100: #f0f0f0;
+    --grey-200: #fafafa;
+    --grey-300: #f2f7ff;
+    --grey-400: #ddd;
+    --grey-450: #bbb;
+    --grey-500: #cccccc8e;
+
+
+    --blue-500: #0074cc;
+    --blue-600: #005fa3;
+    --blue-700: #004d82;
+}
+
 * {
     box-sizing: border-box;
     font-family: Arial, sans-serif;
@@ -8,5 +23,5 @@ body {
     font-size: 1rem;
     line-height: 1.5;
     padding: 1.5rem;
-    background: #fff;
+    background: var(--white);
 }

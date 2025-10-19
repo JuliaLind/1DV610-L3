@@ -221,6 +221,6 @@ export class CurrencyCalculator {
    * @returns {number|null} - the converted amount, or null if rate is not available
    */
   #convertOne (rate) {
-    return rate ? this.#amount * rate : null
+    return rate ? Number((this.#amount * rate).toFixed(2)) : null
   }
 }

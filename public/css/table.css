@@ -1,34 +1,39 @@
 table {
-    border-collapse: collapse;
+    /* border-collapse: collapse; */
     width: 100%;
     max-width: 30rem;
-    margin-top: 1em;
+    margin: 1rem auto;
     font: inherit;
     text-align: left;
-    background-color: #fff;
-    border: 1px solid #cccccc8e;
+    background-color: var(--white);
+    border: 1px solid var(--grey-500);
     border-radius: 4px;
     overflow: hidden;
 }
 
 thead {
-    background-color: #f0f0f0;
+    background-color: var(--grey-100);
 }
 
 th,
 td {
     padding: 0.5em 0.75em;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--grey-400);
 }
 
 th {
     font-weight: 600;
+    text-align: center;
 }
 
 tr:nth-child(even) td {
-    background-color: #fafafa;
+    background-color: var(--grey-200);
 }
 
 tr:hover td {
-    background-color: #f2f7ff;
+    background-color: var(--grey-300);
+}
+
+.value {
+    text-align: right;
 }
