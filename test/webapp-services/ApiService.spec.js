@@ -50,7 +50,6 @@ describe('ApiService', () => {
       expect(fetchStub).to.have.been.calledOnceWithExactly('http://example.com/api/v1/currencies')
     })
 
-
     it('Not OK, API reutrns status 500', async () => {
       fetchStub.resolves({
         ok: false,
@@ -78,10 +77,10 @@ describe('ApiService', () => {
     }
 
     const responseData = {
-    "DKK": 0.68,
-    "PLN": 0.38,
-    "EUR": 0.09
-}
+      DKK: 0.68,
+      PLN: 0.38,
+      EUR: 0.09
+    }
 
     it('submitConversion() OK', async () => {
       fetchStub.resolves({
@@ -99,7 +98,6 @@ describe('ApiService', () => {
       expect(result).to.deep.equal(responseData)
       expect(fetchStub).to.have.been.calledOnceWithExactly('http://example.com/api/v1/convert/100/AUD/BDT+BGN+CHF')
     })
-
 
     it('submitConversion() Not OK', async () => {
       fetchStub.resolves({
@@ -119,5 +117,4 @@ describe('ApiService', () => {
       expect(sut.submitConversion(params)).to.be.rejectedWith('Internal server error.')
     })
   })
-
 })

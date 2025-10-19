@@ -6,12 +6,12 @@ export class ApiService {
 
   /**
    * Creates an instance of the ApiService.
+   *
+   * @param {string} baseUrl - the base URL for the API endpoints (after the host-part)
    */
   constructor (baseUrl) {
     this.#baseUrl = baseUrl + 'api/v1/'
-    console.log(this.#baseUrl)
   }
-
 
   /**
    * Fetches the list of available currencies from the API.
