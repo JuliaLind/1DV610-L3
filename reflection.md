@@ -253,7 +253,13 @@ blev
 
 ```
 
-Cloner som används här är alltså en deepCloner klass som gör en "deep copy" rekursivt på såväl elementet och alla subelement. På så sätt undviker jag risk för sidoeffekter och att datat kan modifieras utanför klassen den tillhör. Nu ser det ut som att det blev mer kod än innan, men det beror på att jag tidigare hade en DataReader klass som jobbade mer "funktionellt", dvs att den tog emot en datastruktur och sedan extraherade olika delar av den, vilket gjorde koden 
+Jag valde att använda map här, eftersom det egentligen inte finns något scenario där BASE_CUR-dimensionen skulle saknas i datan från API:et... om inte all data saknas, förstås.
+
+I den typ av loop med "early return" som jag hade initialt uppstår problemet att man efter loopen måste antingen explicit returnera undefined eller kasta ett fel. Jag tycker att detta blir missvisande i koden, eftersom det kan få läsaren att tro att attributet faktiskt kan saknas ibland. Funktionellt sett behöver man förstås varken kasta ett fel eller returnera undefined, men Scrutinizer, som är ett statiskt kodkvalitetsverktyg jag arbetat med lite grann i tidigare kurser, brukar anmärka på om bara vissa att "vägarna" i en metod har en return sats.
+
+Cloner som används i koden är en egen DeepCloner-klass som rekursivt gör en deep copy av objektet och alla underobjekt. På så sätt undviker jag sidoeffekter och att data kan modifieras utanför den klass där den hör hemma.
+
+Genom att extrahera metoden #isTargetCurrency följer jag även Single Responsibility Principle (SRP) -  #setTargetCurrencies tillsätter attributet, medan #isTargetCurrency avgör vilka element som ska väljas.
 ## Kapitel 4
 
 ## Kapitel 5
