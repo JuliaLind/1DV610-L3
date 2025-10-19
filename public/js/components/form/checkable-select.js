@@ -22,8 +22,9 @@ customElements.define(
     /**
      * Creates an instance of checkable select.
      */
-    constructor () {
+    constructor() {
       super()
+
       this.attachShadow({ mode: 'open' })
         .append(template.content.cloneNode(true))
     }
@@ -32,23 +33,25 @@ customElements.define(
      * Called when the element is connected to the DOM.
      * Adds neccessary eventlisteners.
      */
-    connectedCallback () {
-      this.addEventListener('click', this.onClick, {
+    connectedCallback() {
+      this.addEventListener('change', this.onChange, {
         signal: this.#abortController.signal
       })
     }
 
     /**
-     * Handles click events on the checkable options.
+     * Handles change events on the checkable options.
      *
-     * @param {Event} event - the click event
+     * @param {Event} event - the change event
      */
-    onClick = (event) => {
+    onChange = (event) => {
       const option = event.target.closest('checkable-option')
 
       if (option) {
         this.#toggleSelection(option)
       }
+      console.log(option)
+      console.log(this.#selected)
     }
 
     /**
@@ -56,11 +59,11 @@ customElements.define(
      *
      * @param {HTMLElement} option - The checkable-option element
      */
-    #toggleSelection (option) {
+    #toggleSelection(option) {
       if (this.#isSelected(option)) {
-        this.#unselect(option)
-      } else {
         this.#select(option)
+      } else {
+        this.#unselect(option)
       }
     }
 
@@ -70,11 +73,8 @@ customElements.define(
      * @param {HTMLElement} option - The checkable-option element
      * @returns {boolean} true if selected, false otherwise
      */
-    #isSelected (option) {
-      return (
-        option.hasAttribute('checked') ||
-        option.getAttribute('checked').toLowerCase() === 'true'
-      )
+    #isSelected(option) {
+      return option.hasAttribute('checked')
     }
 
     /**
@@ -82,7 +82,7 @@ customElements.define(
      *
      * @param {HTMLElement} option - The checkable-option element
      */
-    #unselect (option) {
+    #unselect(option) {
       this.#selected.delete(option.getAttribute('value'))
     }
 
@@ -91,7 +91,8 @@ customElements.define(
      *
      * @param {HTMLElement} option - The checkable-option element
      */
-    #select (option) {
+    #select(option) {
+      option.getAttribute('value')
       this.#selected.add(option.getAttribute('value'))
     }
 
@@ -102,7 +103,7 @@ customElements.define(
      * @param {string} attributeName - The name of the attribute to get
      * @returns {string|Array<string>} The attribute value or selected values
      */
-    getAttribute (attributeName) {
+    getAttribute(attributeName) {
       if (attributeName === 'value') {
         return Array.from(this.#selected)
       }
@@ -114,7 +115,7 @@ customElements.define(
      * Called when the element is disconnected from the DOM.
      * Cleans up eventlisteners.
      */
-    disconnectedCallback () {
+    disconnectedCallback() {
       this.#abortController.abort()
     }
   }

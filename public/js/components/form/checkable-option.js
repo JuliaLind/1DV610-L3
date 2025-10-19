@@ -14,7 +14,9 @@ customElements.define('checkable-option',
    * Represents a checkable option in a select list.
    */
   class extends HTMLElement {
+    #abortController = new AbortController()
     #checkbox
+    #checked = false
 
     /**
      * Creates an instance of current class.
@@ -26,6 +28,46 @@ customElements.define('checkable-option',
         .append(template.content.cloneNode(true))
 
       this.#checkbox = this.shadowRoot.querySelector('input[type="checkbox"]')
+    }
+
+    connectedCallback () {
+      this.#checkbox.addEventListener('change', this.#onChange, { signal: this.#abortController.signal })
+    }
+
+    #onChange = (event) => {
+      this.#toggleChecked()
+      this.dispatchEvent(new Event('change', { bubbles: true }))
+    }
+
+    #toggleChecked () {
+      if (this.#checkbox.checked) {
+        this.#checked = true
+        return
+      }
+
+      this.#checked = false
+    }
+
+    disconnectedCallback () {
+      this.#abortController.abort()
+    }
+
+    hasAttribute (name) {
+      switch (name) {
+        case 'checked':
+          return this.#checked
+        default:
+          return super.hasAttribute(name)
+      }
+    }
+
+    getAttribute (name) {
+      switch (name) {
+        case 'checked':
+          return String(this.#checked)
+        default:
+          return super.getAttribute(name)
+      }
     }
 
     /**
@@ -45,19 +87,19 @@ customElements.define('checkable-option',
      * @param {string} newValue - the new value of the changed attribute
      */
     attributeChangedCallback (name, oldValue, newValue) {
-      if (oldValue === newValue) return
-
       switch (name) {
         case 'value':
           this.#checkbox.value = newValue
           break
         case 'checked':
-          if (newValue === null || newValue.toLowerCase() === 'true') {
-            this.#checkbox.setAttribute('checked', '')
+          if (newValue !== null) {
+            this.#checked = true
+            this.#checkbox.checked = true
             break
           }
 
-          this.#checkbox.removeAttribute('checked')
+          this.#checkbox.checked = false
+          this.#checked = false
           break
       }
     }
