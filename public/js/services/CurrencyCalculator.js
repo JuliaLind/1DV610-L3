@@ -172,9 +172,18 @@ export class CurrencyCalculator {
       throw new Error('Rates have not been set.')
     }
 
-    if (!this.#amount || Number.isNaN(this.#amount)) {
+    if (!this.#isValidAmount()) {
       throw new Error('Invalid amount.')
     }
+  }
+
+  /**
+   * Checks if the amount is valid.
+   *
+   * @returns { boolean } - true if the amount is valid
+   */
+  #isValidAmount () {
+    return this.#amount && !Number.isNaN(Number(this.#amount))
   }
 
   /**
