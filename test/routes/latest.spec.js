@@ -41,7 +41,7 @@ describe('e2e - latest', () => {
     fetcherStub.resolves(rates)
     const exp = {
       DKK: {
-        value: round(1 /1.5637),
+        value: round(1 / 1.5637),
         period: {
           start: '2025-09-19',
           end: '2025-09-19'

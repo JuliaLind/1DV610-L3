@@ -21,4 +21,3 @@ export const calculateAverage = (values) => {
 export const round = (amount, decimals = 4) => {
   return Number(amount.toFixed(decimals))
 }
-

@@ -29,7 +29,6 @@ describe('e2e - date', () => {
     fetcherStub.resetBehavior()
   })
 
-
   it('average based on one observation: date/2025-09-19/DKK+EUR', async function () {
     const rates = {
       DKK: {
