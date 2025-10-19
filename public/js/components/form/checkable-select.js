@@ -1,51 +1,8 @@
-const template = document.createElement('template');
+const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-    :host {
-      display: inline-block;
-      font: inherit;
-      color: inherit;
-      box-sizing: border-box;
-
-      inline-size: min(24rem, 100%);
-
-      border: 1px solid #bbb;
-      border-radius: 4px;
-      background: #fff;
-      padding: 0;
-      overflow: hidden;
-    }
-
-
-    #options {
-      max-block-size: 10rem; 
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    ::slotted(checkable-option) {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      padding: 0.35em 0.6em;
-      line-height: 1.2;
-      cursor: default;
-      user-select: none;
-    }
-
-    ::slotted(checkable-option:hover) {
-      background: #f2f2f2;
-    }
-
-    ::slotted(input[type="checkbox"]) {
-      margin: 0;
-      cursor: pointer;
-    }
-
-    :host([multiple]) {
-      height: auto;
-    }
+    @import '../../../css/select.css';
   </style>
 
   <div id="options">
@@ -55,28 +12,51 @@ template.innerHTML = `
 
 customElements.define(
   'checkable-select',
+  /**
+   * A html select-like element with checkable options.
+   */
   class extends HTMLElement {
     #selected = new Set()
     #abortController = new AbortController()
 
-    constructor() {
+    /**
+     * Creates an instance of checkable select.
+     */
+    constructor () {
       super()
       this.attachShadow({ mode: 'open' })
-      .append(template.content.cloneNode(true))
+        .append(template.content.cloneNode(true))
     }
 
-    connectedCallback() {
+    /**
+     * Called when the element is connected to the DOM.
+     * Adds neccessary eventlisteners.
+     */
+    connectedCallback () {
       this.addEventListener('click', this.onClick, {
-        signal: this.#abortController.signal,
-      });
+        signal: this.#abortController.signal
+      })
     }
 
+    /**
+     * Handles click events on the checkable options.
+     *
+     * @param {Event} event - the click event
+     */
     onClick = (event) => {
       const option = event.target.closest('checkable-option')
-      if (option) this.#toggleSelection(option)
-    };
 
-    #toggleSelection(option) {
+      if (option) {
+        this.#toggleSelection(option)
+      }
+    }
+
+    /**
+     * Toggles the selection state of a checkable option.
+     *
+     * @param {HTMLElement} option - The checkable-option element
+     */
+    #toggleSelection (option) {
       if (this.#isSelected(option)) {
         this.#unselect(option)
       } else {
@@ -84,29 +64,57 @@ customElements.define(
       }
     }
 
-    #isSelected(option) {
+    /**
+     * Checks if a checkable option is selected.
+     *
+     * @param {HTMLElement} option - The checkable-option element
+     * @returns {boolean} true if selected, false otherwise
+     */
+    #isSelected (option) {
       return (
-        option.hasAttribute('checked') &&
+        option.hasAttribute('checked') ||
         option.getAttribute('checked').toLowerCase() === 'true'
       )
     }
 
-    #select(option) {
-      this.#selected.add(option.getAttribute('value'))
-    }
-
-    #unselect(option) {
+    /**
+     * Unselects a checkable option by removing it from the selection set.
+     *
+     * @param {HTMLElement} option - The checkable-option element
+     */
+    #unselect (option) {
       this.#selected.delete(option.getAttribute('value'))
     }
 
-    getAttribute(attributeName) {
+    /**
+     * Selects a checkable option by adding it to the selection set.
+     *
+     * @param {HTMLElement} option - The checkable-option element
+     */
+    #select (option) {
+      this.#selected.add(option.getAttribute('value'))
+    }
+
+    /**
+     * Overrides the default getAttribute to return the selected values
+     * if attribute name is 'value'. Otherwise, returns the requested attribute.
+     *
+     * @param {string} attributeName - The name of the attribute to get
+     * @returns {string|Array<string>} The attribute value or selected values
+     */
+    getAttribute (attributeName) {
       if (attributeName === 'value') {
         return Array.from(this.#selected)
       }
+
       return super.getAttribute(attributeName)
     }
 
-    disconnectedCallback() {
+    /**
+     * Called when the element is disconnected from the DOM.
+     * Cleans up eventlisteners.
+     */
+    disconnectedCallback () {
       this.#abortController.abort()
     }
   }

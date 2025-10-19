@@ -14,7 +14,6 @@ describe('CurrencyCalculator', () => {
   })
 
   describe('Get/set base currency', () => {
-
     it('not previously set OK', () => {
       const calculator = new CurrencyCalculator()
       calculator.setBaseCurrency('USD')
@@ -110,7 +109,6 @@ describe('CurrencyCalculator', () => {
       expect(calculator.getTargetCurrencies()).to.deep.equal(['USD', 'EUR', 'PLN'])
       expect(calculator.hasCachedRates()).to.be.false
     })
-
 
     it('previously set, not changed OK', () => {
       const calculator = new CurrencyCalculator()

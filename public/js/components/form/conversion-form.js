@@ -12,59 +12,7 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-  :host {
-    display: flex;
-    width: fit-content;
-    max-width: 100%;
-    box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-
-  fieldset {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    width: fit-content;
-    align-items: flex-start;
-    justify-content: center;
-  }
-
-  label {
-    display: flex;
-    flex-direction: column;
-    width: fit-content;
-  }
-
-  button {
-    display: block;
-    padding: 0.5em 1.2em;  
-    font: inherit; 
-    color: #fff;
-    background-color: #0074cc;
-    border: 1px solid #005fa3;
-    border-radius: 4px;
-    cursor: pointer;
-    margin: 1rem auto;
-    margin-left: auto;
-    margin-right: auto;
-    width: 200px;
-    max-width: 100%;
-  }
-
-  button:hover {
-    background-color: #005fa3; 
-  }
-
-  button:active {
-    background-color: #004d82;
-  }
-
-  // button:disabled {
-  //   opacity: 0.6;
-  //   cursor: not-allowed;
-  // }
+    @import '../../../css/form.css';
   </style>
 
 <form part="form" autocomplete="off" method="GET" action="">
@@ -99,7 +47,7 @@ customElements.define('conversion-form',
     /**
      * Creates an instance of current class.
      */
-    constructor() {
+    constructor () {
       super()
 
       this.attachShadow({ mode: 'open' })
@@ -111,7 +59,7 @@ customElements.define('conversion-form',
     /**
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
-    connectedCallback() {
+    connectedCallback () {
       this.#form.addEventListener('submit', this.onSubmit, { signal: this.#abortController.signal })
     }
 
@@ -120,7 +68,7 @@ customElements.define('conversion-form',
      *
      * @param {Array<object>} currencies - The currencies to make options from.
      */
-    renderCurrencyOptions(currencies) {
+    renderCurrencyOptions (currencies) {
       const baseSelectContent = this.#form.querySelector('#base')
       const targetSelectContent = this.#form.querySelector('#targets')
 
@@ -137,14 +85,11 @@ customElements.define('conversion-form',
      * @param {string} optionType - option or checkable-option
      * @returns {HTMLElement} option or checkable-option element
      */
-    #createOption(currency, optionType = 'option') {
+    #createOption (currency, optionType = 'option') {
       const option = document.createElement(optionType)
 
       option.setAttribute('value', currency.id)
       option.textContent = `${currency.id} - ${currency.name}`
-
-      console.log(option)
-
 
       return option
     }
@@ -172,7 +117,7 @@ customElements.define('conversion-form',
     /**
      * Called when the element is removed from the DOM. Removes eventlistener.
      */
-    disconnectedCallback() {
+    disconnectedCallback () {
       this.#abortController.abort()
     }
   })

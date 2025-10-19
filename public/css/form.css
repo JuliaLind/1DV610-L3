@@ -1,0 +1,53 @@
+:host {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+fieldset {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    width: fit-content;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+button {
+    display: block;
+    padding: 0.5em 1.2em;
+    font: inherit;
+    color: #fff;
+    background-color: #0074cc;
+    border: 1px solid #005fa3;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 1rem auto;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    max-width: 100%;
+}
+
+button:hover {
+    background-color: #005fa3;
+}
+
+button:active {
+    background-color: #004d82;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

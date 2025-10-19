@@ -35,7 +35,7 @@ export class ApiService {
    */
   async submitConversion (reqParams) {
     const { amount, base, targets } = reqParams
-    const url = new URL(`${this.#baseUrl}convert/${amount}/${base}/${targets.join('+')}`)
+    const url = `${this.#baseUrl}convert/${amount}/${base}/${targets.join('+')}`
 
     const response = await fetch(url)
 

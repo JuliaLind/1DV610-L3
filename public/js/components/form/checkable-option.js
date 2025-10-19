@@ -2,18 +2,7 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-    :host {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    label {
-      display: block;
-      width: 100%;
-      height: 100%;
-  }
-
+    @import '../../../css/option.css';
   </style>
 
 <label id="currencyLabel"><input type="checkbox" id="currency" name="currency" value="" /> <slot></slot></label>
@@ -30,7 +19,7 @@ customElements.define('checkable-option',
     /**
      * Creates an instance of current class.
      */
-    constructor() {
+    constructor () {
       super()
 
       this.attachShadow({ mode: 'open' })
@@ -44,7 +33,7 @@ customElements.define('checkable-option',
      *
      * @returns {Array<string>} - The attributes to observe for changes.
      */
-    static get observedAttributes() {
+    static get observedAttributes () {
       return ['value', 'checked']
     }
 
@@ -55,7 +44,7 @@ customElements.define('checkable-option',
      * @param {string} oldValue - the old value of the changed attribute
      * @param {string} newValue - the new value of the changed attribute
      */
-    attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback (name, oldValue, newValue) {
       if (oldValue === newValue) return
 
       switch (name) {

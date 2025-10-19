@@ -13,50 +13,8 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-    :host {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-      h1 {
-        text-align: center;
-      }
-
-      table {
-        border-collapse: collapse;   /* removes double borders */
-        width: 100%;                 /* full width of its container */
-        max-width: 30rem;            /* keeps it from being too wide */
-        margin-top: 1em;
-        font: inherit;
-        text-align: left;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        overflow: hidden;            /* round corners work properly */
-      }
-
-      thead {
-        background-color: #f0f0f0;
-      }
-
-      th, td {
-        padding: 0.5em 0.75em;
-        border-bottom: 1px solid #ddd;
-      }
-
-      th {
-        font-weight: 600;
-      }
-
-      tr:nth-child(even) td {
-        background-color: #fafafa;   /* subtle alternating row color */
-      }
-
-      tr:hover td {
-        background-color: #f2f7ff;   /* gentle highlight when hovering a row */
-      }
-
+    @import '../../../css/main.css';
+    @import '../../../css/table.css';
   </style>
 
 <main>
@@ -96,7 +54,7 @@ customElements.define('main-view',
     /**
      * Creates an instance of current class.
      */
-    constructor() {
+    constructor () {
       super()
 
       this.attachShadow({ mode: 'open' })
@@ -108,7 +66,7 @@ customElements.define('main-view',
     /**
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
-    async connectedCallback() {
+    async connectedCallback () {
       this.#addEventListeners()
       await this.#prepareForm()
     }
@@ -116,7 +74,7 @@ customElements.define('main-view',
     /**
      * Prepares the form by fetching currencies and rendering options.
      */
-    async #prepareForm() {
+    async #prepareForm () {
       const currencies = await this.#fetchCurrencies()
 
       if (currencies) {
@@ -136,7 +94,7 @@ customElements.define('main-view',
      *
      * @returns {Promise<Array>} - a list of currency objects containing currency name and currency id
      */
-    async #fetchCurrencies() {
+    async #fetchCurrencies () {
       try {
         return await this.#apiService.fetchCurrencies()
       } catch (error) {
@@ -149,7 +107,7 @@ customElements.define('main-view',
      *
      * @param {Error} error - the error object.
      */
-    #handleError(error) {
+    #handleError (error) {
       const errorEvent = new CustomEvent(
         'fetch-error',
         { detail: { message: error.message } }
@@ -208,7 +166,7 @@ customElements.define('main-view',
      *
      * @param {object} results - the conversion results
      */
-    #renderResults(results) {
+    #renderResults (results) {
       const tbody = this.shadowRoot.querySelector('#results tbody')
       tbody.innerHTML = ''
 
@@ -226,7 +184,7 @@ customElements.define('main-view',
     /**
      * Called when the element is removed from the DOM. Removes eventlistener.
      */
-    disconnectedCallback() {
+    disconnectedCallback () {
       this.#abortController.abort()
     }
   })
