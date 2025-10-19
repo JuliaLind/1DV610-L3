@@ -6,7 +6,7 @@
   "main": "src/server.js",
   "scripts": {
     "test": "c8 mocha 'test/**/*.spec.js' --exit",
-    "start": "npm run start",
+    "start": "node src/server.js",
     "dev": "nodemon start",
     "lint": "npx eslint ./ || exit 0",
     "lint:fix": "npx eslint ./ --fix || exit 0"
