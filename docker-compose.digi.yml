@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       NODE_ENV: production
-      PORT: 3000,
+      PORT: 3000
       BASE_URL: exr
     ports:
       - 5056:3000
@@ -15,4 +15,4 @@ services:
       - network-exr
 
 networks:
-  network-exr
+  network-exr: {}
