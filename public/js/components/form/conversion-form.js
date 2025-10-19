@@ -12,11 +12,63 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
+  :host {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
+
+  fieldset {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    width: fit-content;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+  }
+
+  button {
+    display: block;
+    padding: 0.5em 1.2em;  
+    font: inherit; 
+    color: #fff;
+    background-color: #0074cc;
+    border: 1px solid #005fa3;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 1rem auto;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+    max-width: 100%;
+  }
+
+  button:hover {
+    background-color: #005fa3; 
+  }
+
+  button:active {
+    background-color: #004d82;
+  }
+
+  // button:disabled {
+  //   opacity: 0.6;
+  //   cursor: not-allowed;
+  // }
   </style>
 
 <form part="form" autocomplete="off" method="GET" action="">
-    <fieldset id="base">
+    <fieldset>
         <label>Amount
             <input id="amount" name="amount" type="number" inputmode="decimal" step="0.01" placeholder="1500" required />
         </label>
@@ -24,9 +76,6 @@ template.innerHTML = `
             <select id="base" name="base" required>
             </select>
         </label>
-    </fieldset>
-
-    <fieldset>
         <label>Target currencies (multi-select)
             <checkable-select id="targets" name="targets" multiple size="10">
             </checkable-select>
@@ -34,7 +83,7 @@ template.innerHTML = `
     </fieldset>
 
 
-    <button id="submit" type="submit"></button>
+    <button id="submit" type="submit">Convert</button>
 </form>
 
 `
@@ -50,19 +99,19 @@ customElements.define('conversion-form',
     /**
      * Creates an instance of current class.
      */
-    constructor () {
+    constructor() {
       super()
 
-      const shadow = this.attachShadow({ mode: 'open' })
+      this.attachShadow({ mode: 'open' })
         .append(template.content.cloneNode(true))
 
-      this.#form = shadow.querySelector('form')
+      this.#form = this.shadowRoot.querySelector('form')
     }
 
     /**
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
-    connectedCallback () {
+    connectedCallback() {
       this.#form.addEventListener('submit', this.onSubmit, { signal: this.#abortController.signal })
     }
 
@@ -71,7 +120,7 @@ customElements.define('conversion-form',
      *
      * @param {Array<object>} currencies - The currencies to make options from.
      */
-    renderCurrencyOptions (currencies) {
+    renderCurrencyOptions(currencies) {
       const baseSelectContent = this.#form.querySelector('#base')
       const targetSelectContent = this.#form.querySelector('#targets')
 
@@ -88,11 +137,14 @@ customElements.define('conversion-form',
      * @param {string} optionType - option or checkable-option
      * @returns {HTMLElement} option or checkable-option element
      */
-    #createOption (currency, optionType = 'option') {
+    #createOption(currency, optionType = 'option') {
       const option = document.createElement(optionType)
 
       option.setAttribute('value', currency.id)
       option.textContent = `${currency.id} - ${currency.name}`
+
+      console.log(option)
+
 
       return option
     }
@@ -120,7 +172,7 @@ customElements.define('conversion-form',
     /**
      * Called when the element is removed from the DOM. Removes eventlistener.
      */
-    disconnectedCallback () {
+    disconnectedCallback() {
       this.#abortController.abort()
     }
   })

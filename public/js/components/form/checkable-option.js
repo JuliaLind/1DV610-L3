@@ -8,9 +8,14 @@ template.innerHTML = `
       height: 100%;
     }
 
+    label {
+      display: block;
+      width: 100%;
+  }
+
   </style>
 
-<input type="checkbox" id="currency" name="currency" value="" /> <label id="currencyLabel"><slot></slot></label>
+<label id="currencyLabel"><input type="checkbox" id="currency" name="currency" value="" /> <slot></slot></label>
 
 `
 
@@ -24,13 +29,13 @@ customElements.define('checkable-option',
     /**
      * Creates an instance of current class.
      */
-    constructor () {
+    constructor() {
       super()
 
-      const shadow = this.attachShadow({ mode: 'open' })
+      this.attachShadow({ mode: 'open' })
         .append(template.content.cloneNode(true))
 
-      this.#checkbox = shadow.querySelector('input[type="checkbox"]')
+      this.#checkbox = this.shadowRoot.querySelector('input[type="checkbox"]')
     }
 
     /**
@@ -38,7 +43,7 @@ customElements.define('checkable-option',
      *
      * @returns {Array<string>} - The attributes to observe for changes.
      */
-    static get observedAttributes () {
+    static get observedAttributes() {
       return ['value', 'checked']
     }
 
@@ -49,7 +54,7 @@ customElements.define('checkable-option',
      * @param {string} oldValue - the old value of the changed attribute
      * @param {string} newValue - the new value of the changed attribute
      */
-    attributeChangedCallback (name, oldValue, newValue) {
+    attributeChangedCallback(name, oldValue, newValue) {
       if (oldValue === newValue) return
 
       switch (name) {
@@ -58,11 +63,11 @@ customElements.define('checkable-option',
           break
         case 'checked':
           if (newValue === null || newValue.toLowerCase() === 'true') {
-            this.#checkbox.checked = newValue === 'true'
+            this.#checkbox.setAttribute('checked', '')
             break
           }
 
-          this.#checkbox.checked = false
+          this.#checkbox.removeAttribute('checked')
           break
       }
     }

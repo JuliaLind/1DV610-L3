@@ -18,6 +18,11 @@ template.innerHTML = `
       width: 100%;
       height: 100%;
     }
+
+      h1 {
+        text-align: center;
+      }
+
   </style>
 
 <main>
@@ -28,7 +33,7 @@ template.innerHTML = `
   </tr>
 </template>
 
-<h1>Test</h1>
+<h1>Currency converter</h1>
   <conversion-form></conversion-form>
   <table id="results" part="results">
     <thead>
@@ -57,19 +62,19 @@ customElements.define('main-view',
     /**
      * Creates an instance of current class.
      */
-    constructor () {
+    constructor() {
       super()
 
-      const shadow = this.attachShadow({ mode: 'open' })
+      this.attachShadow({ mode: 'open' })
         .append(template.content.cloneNode(true))
 
-      this.#form = shadow.querySelector('conversion-form')
+      this.#form = this.shadowRoot.querySelector('conversion-form')
     }
 
     /**
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
-    async connectedCallback () {
+    async connectedCallback() {
       this.#addEventListeners()
       await this.#prepareForm()
     }
@@ -77,7 +82,7 @@ customElements.define('main-view',
     /**
      * Prepares the form by fetching currencies and rendering options.
      */
-    async #prepareForm () {
+    async #prepareForm() {
       const currencies = await this.#fetchCurrencies()
 
       if (currencies) {
@@ -97,7 +102,7 @@ customElements.define('main-view',
      *
      * @returns {Promise<Array>} - a list of currency objects containing currency name and currency id
      */
-    async #fetchCurrencies () {
+    async #fetchCurrencies() {
       try {
         return await this.#apiService.fetchCurrencies()
       } catch (error) {
@@ -110,7 +115,7 @@ customElements.define('main-view',
      *
      * @param {Error} error - the error object.
      */
-    #handleError (error) {
+    #handleError(error) {
       const errorEvent = new CustomEvent(
         'fetch-error',
         { detail: { message: error.message } }
@@ -169,7 +174,7 @@ customElements.define('main-view',
      *
      * @param {object} results - the conversion results
      */
-    #renderResults (results) {
+    #renderResults(results) {
       const tbody = this.shadowRoot.querySelector('#results tbody')
       tbody.innerHTML = ''
 
@@ -187,7 +192,7 @@ customElements.define('main-view',
     /**
      * Called when the element is removed from the DOM. Removes eventlistener.
      */
-    disconnectedCallback () {
+    disconnectedCallback() {
       this.#abortController.abort()
     }
   })
