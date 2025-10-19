@@ -50,6 +50,7 @@ describe('ApiService', () => {
       expect(fetchStub).to.have.been.calledOnceWithExactly('http://example.com/api/v1/currencies')
     })
 
+
     it('Not OK, API reutrns status 500', async () => {
       fetchStub.resolves({
         ok: false,
@@ -70,13 +71,19 @@ describe('ApiService', () => {
   })
 
   describe('submitConversion)', () => {
+    const params = {
+      amount: 100,
+      base: 'AUD',
+      targets: ['BDT', 'BGN', 'CHF']
+    }
+
+    const responseData = {
+    "DKK": 0.68,
+    "PLN": 0.38,
+    "EUR": 0.09
+}
+
     it('submitConversion() OK', async () => {
-      const currencies = [
-        { id: 'AUD', name: 'Australian dollar' },
-        { id: 'BDT', name: 'Bangladeshi taka' },
-        { id: 'BGN', name: 'Bulgarian lev' },
-        { id: 'CHF', name: 'Swiss franc' }
-      ]
       fetchStub.resolves({
         ok: true,
         /**
@@ -84,14 +91,15 @@ describe('ApiService', () => {
          *
          * @returns {Promise<object>} - promise containing the fake data object
          */
-        json: () => Promise.resolve(currencies)
+        json: () => Promise.resolve(responseData)
       })
 
       const sut = new ApiService('http://example.com/')
-      const result = await sut.fetchCurrencies()
-      expect(result).to.deep.equal(currencies)
-      expect(fetchStub).to.have.been.calledOnceWithExactly('http://example.com/api/v1/currencies')
+      const result = await sut.submitConversion(params)
+      expect(result).to.deep.equal(responseData)
+      expect(fetchStub).to.have.been.calledOnceWithExactly('http://example.com/api/v1/convert/100/AUD/BDT+BGN+CHF')
     })
+
 
     it('submitConversion() Not OK', async () => {
       fetchStub.resolves({
@@ -108,7 +116,8 @@ describe('ApiService', () => {
       })
 
       const sut = new ApiService('http://example.com/')
-      expect(sut.fetchCurrencies()).to.be.rejectedWith('Internal server error.')
+      expect(sut.submitConversion(params)).to.be.rejectedWith('Internal server error.')
     })
   })
+
 })
