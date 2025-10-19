@@ -2,16 +2,25 @@
 
 Efter att ha reflekterat kring koden i L2 samt fått feedback från medstudenter skrev jag om merparten av de privata delarna i modulen, samt några va de publika metoderna  (vilket förstås följdes av publicering av ny major version eftersom det påverkade bakåtkompatibilitet).
 
-## Kapitel 2  
+## Kapitel 2  - Meaningful Names
 
-Jag har skrivit om onödiga förkortningar i modulen till motsvarande längre variant som gör koden lättare för utomstående att sätta sig in i. Till exempel har jag änrat har ändrat namn på metoden #prep() till #prepareRates().
+Jag har skrivit om onödiga förkortningar i modulen till motsvarande längre variant som gör koden lättare för utomstående att sätta sig in i. Till exempel har jag änrat har ändrat namn på metoden #prep() till #prepareRates(). I vissa fall har behållit förkortning.  
+
 Jag har också ändrat vissa metodnamn för att höja abstraktionsnivån och bättre representera metodens övergripande ansvar.  
 
 Jag har även ändrat på namn som kunde vara missvisande. Till expempel hade jag en metod som hette #isReady(), men den returnerade inte ett boolan utan kastade ett fel om klassen inte var "redo". Jag misstänker att jag ursprungligen tänkte att den skulle returnera en boolean men sedan ändrade mig - den metoden bytte jag namn på till #alertIfNotReady(), vilket då blir tydligare att metoden gör något och inte returnerar ett värde.
 
 
+Överlag tycker jag att min kod följer namnreglerna bra. Även om jag ibland upplever det som svårt att hitta korta men samtidigt beskrivande namn (kanske brist på ordförråd eller fantasi), har jag ändå varit noga med att följa de andra reglerna: inga onödiga prefix, interna termer eller förkortningar, ingen typ i variabelnamn, samt sökbara namn.
 
-## Kapitel 3  
+Jag undviker överlag korta namn, även i lokala block föredrar jag att ge variabler tydliga namn, till och med i for-loopar. Det handlar inte bara om sökbarhet, utan också om att det kan bli svårt att hålla isär vad man faktiskt loopar igenom när man har flera loopar, även om de är uppdelade i olika subfunktioner. Det märktes särskilt i den här uppgiften, eftersom Norges API har en ganska komplex och nästlad struktur i sina svar.
+
+Just det här med prefix funderade jag dock extra på när jag skapade egna komponenter. Custom components måste ju bestå av minst två ord med bindestreck mellan (för att undvika framtida konflikter med eventuella nya HTML-element). I tidigare kurser har vi fått lära oss att ett sätt att undvika krockar är att prefixa sina custom element, till exempel med sina initialer, e.g. jl-table. På så sätt minskar man risken att ens egna element krockar med andras. Samtidigt motsäger det ju regeln om att undvika prefix, vilket gör det lite klurigt att avgöra vad som är mest konsekvent. I denna uppgift valde jag att följa bokens regler och inte prefixa. 
+
+Jag har även försökt följa regeln om “one word per concept”, men kom flera gånger på mig själv med att fundera över om vissa ord egentligen beskriver samma koncept eller inte. Ett exempel är fetch och get. get används ju ofta för att hämta ut attribut (accessor), men i tidigare kurser har vi lärt oss att controllerns metoder kan döpas efter de anrop de hanterar. Till exempel get för GET-request och post för POST-request. När jag har metoder som anropar ett API känns det mest naturligt att använda fetch. Men om jag ska hämta data och endast anropar API:et om datan inte redan finns cachad, ska det då heta get eller fetch? Likaså, om metoden gör en GET-request till API:et kanske den bör heta get, även om det är den enda metoden som kommunicerar med API:et. Då slipper man behöva döpa om den om det tillkommer en post-metod längre fram. Just dessa två begrepp har jag nog inte varit helt konsekvent med, även om jag har försökt att vara det.
+
+
+## Kapitel 3  - Functions
 
 Jag har justerat abstraktionsnivån genom att plocka ut delar som låg på längre abstraktionsnivå än andra delar i metoden. T ex har
 
@@ -186,8 +195,65 @@ Efter refaktorering blev koden:
 
 ```
 
-Man kan förstås argumentera för att setOriginalRates ocg getBaseRate är på lägre abstraktionsnivå än reset() och rebaseRates() men jag kan inte riktigt se hur man skulle kunna abstrahera bort det ännu mer.
+Man kan förstås argumentera för att setOriginalRates ocg getBaseRate är på lägre abstraktionsnivå än reset() och rebaseRates() men jag kan inte riktigt se hur man skulle kunna abstrahera bort det ännu mer.  
 
+När det kommer till storlek på metod och komplexitet tycket jag att min kod ligger ganska bra till. Jadg har inga långa metoder och skulle säga att överlag har jag inte mer än 2 "indrag", och det är inte på många ställen det heller.  Efter inlämningen skrev jag också om koden från loopar med if/else till att använda map, find och filter, vilket i sig minskar antal förgreningar och blir mer läsbart.
+
+T ex
+
+```js
+  /**
+   * Get the currencies from the data.
+   *
+   * @returns {Array} currencies - Array of currency objects from BASE_CUR dimension
+   */
+  #getCurrencies () {
+    for (const dim of this.#data.structure.dimensions.series) {
+      if (dim.id === 'BASE_CUR') {
+        return dim.values
+      }
+    }
+
+    throw new Error('No BASE_CUR dimension found in data')
+  }
+
+```
+
+
+blev
+
+```js
+  /**
+   * Sets the target currencies from the API data.
+   *
+   * @param {object} data - the structure part of data returned by API, to extract target currencies from
+   */
+  #setTargetCurrencies (data) {
+    this.#targetCurrencies = data.dimensions.series.find(dimension => this.#isTargetCurrency(dimension)).values
+  }
+
+  /**
+   * Checks if the dimension is the target currency dimension.
+   *
+   * @param {object} dimension - dimension object to check
+   * @returns {boolean} - whether the dimension is the target currency dimension
+   */
+  #isTargetCurrency (dimension) {
+    return dimension.id === 'BASE_CUR'
+  }
+
+  /**
+   * Gets the target currencies.
+   *
+   * @returns {Array} - a list with the target currencies
+   */
+  getTargetCurrencies () {
+    return this.#targetCurrencies.map(currency => this.#cloner.clone(currency))
+  }
+
+```
+
+Cloner som används här är alltså en deepCloner klass som gör en "deep copy" rekursivt på såväl elementet och alla subelement. På så sätt undviker jag risk för sidoeffekter och att datat kan modifieras utanför klassen den tillhör. Nu ser det ut som att det blev mer kod än innan, men det beror på att jag tidigare hade en DataReader klass som jobbade mer "funktionellt", dvs att den tog emot en datastruktur och sedan extraherade olika delar av den, vilket gjorde koden 
 ## Kapitel 4
 
 ## Kapitel 5
@@ -203,3 +269,14 @@ Man kan förstås argumentera för att setOriginalRates ocg getBaseRate är på 
 ## Kapitel 10
 
 ## Kapitel 11
+
+
+## Notes for later
+
+Jag föredrar när setters och getters ligger nära varandra, men det blev svårt att få ihop det med regeln om att koden ska kunna läsas uppifrån och ner. Om en setter innehåller metoder som i sin tur anropar andra metoder, och dessa ska placeras i tur och ordning, hamnar den tillhörande gettern väldigt långt ner i klassen.
+
+Jag har till exempel en klass som tar emot ett dataobjekt och, utifrån datat, hämtar ut och sätter olika attribut med hjälp av privata setters. Eftersom flera setters anropas från samma metod, och dessa i sin tur har egna submetoder, blir det så att getters hamnar längst ner i klassen. Jag upplever att koden blir lite svårläst på det sättet, eftersom det blir svårt att snabbt se vilka attribut man faktiskt har tillgång till att läsa av.
+
+Samtidigt tycker jag att koden blir mer lättöverskådlig om de publika metoderna alltid ligger högst upp, men då hamnar getters och setters inte nära varandra heller i det fall setters är privata.
+
+Det är svårt att väga dessa alternativ mot varandra, men jag tror att jag föredrar att lägga gettern först, sedan settern, och därefter eventuella submetoder till settern i tur och ordning, även om alla setters anropas från samma publika metod.
