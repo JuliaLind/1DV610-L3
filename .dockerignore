@@ -1,0 +1,10 @@
+# Exclude all files and directories!
+*
+
+# Explicitly include
+!src
+!package-lock.json
+!package.json
+!Dockerfile
+!.dockerignore
+!public
