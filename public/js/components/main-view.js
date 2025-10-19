@@ -48,7 +48,7 @@ customElements.define('main-view',
   class extends HTMLElement {
     #form
     #abortController = new AbortController()
-    #apiService = new ApiService(import.meta.env?.BASE_URL || '/')
+    #apiService = new ApiService()
     #calculator = new CurrencyCalculator()
 
     /**

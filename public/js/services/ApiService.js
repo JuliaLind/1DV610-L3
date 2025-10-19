@@ -9,8 +9,9 @@ export class ApiService {
    *
    * @param {string} baseUrl - the base URL where the API (and current app) is hosted
    */
-  constructor (baseUrl) {
+  constructor (baseUrl = import.meta.env?.BASE_URL || '/') {
     this.#baseUrl = baseUrl + 'api/v1/'
+    console.log(this.#baseUrl)
   }
 
   /**
