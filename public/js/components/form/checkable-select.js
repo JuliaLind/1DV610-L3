@@ -92,12 +92,10 @@ customElements.define(
     }
 
     #select(option) {
-      option.setAttribute('checked', 'true')
       this.#selected.add(option.getAttribute('value'))
     }
 
     #unselect(option) {
-      option.removeAttribute('checked')
       this.#selected.delete(option.getAttribute('value'))
     }
 

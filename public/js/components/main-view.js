@@ -23,6 +23,40 @@ template.innerHTML = `
         text-align: center;
       }
 
+      table {
+        border-collapse: collapse;   /* removes double borders */
+        width: 100%;                 /* full width of its container */
+        max-width: 30rem;            /* keeps it from being too wide */
+        margin-top: 1em;
+        font: inherit;
+        text-align: left;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        overflow: hidden;            /* round corners work properly */
+      }
+
+      thead {
+        background-color: #f0f0f0;
+      }
+
+      th, td {
+        padding: 0.5em 0.75em;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        font-weight: 600;
+      }
+
+      tr:nth-child(even) td {
+        background-color: #fafafa;   /* subtle alternating row color */
+      }
+
+      tr:hover td {
+        background-color: #f2f7ff;   /* gentle highlight when hovering a row */
+      }
+
   </style>
 
 <main>

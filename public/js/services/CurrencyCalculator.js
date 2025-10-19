@@ -4,7 +4,7 @@
 export class CurrencyCalculator {
   #date
   #baseCurrency
-  #targetCurrencies
+  #targetCurrencies = []
   #rates = {}
   #amount
 
