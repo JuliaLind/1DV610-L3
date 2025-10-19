@@ -101,7 +101,7 @@ customElements.define('main-view',
     #getBaseUrl() {
       const pathAfterHost = window.location.pathname.split('/')
       const nonEmptyUrlParts = pathAfterHost.filter(part => part.length > 0)
-      const baseUrl = nonEmptyUrlParts.length > 0 ? `./${nonEmptyUrlParts[0]}/` : './'
+      const baseUrl = nonEmptyUrlParts.length > 0 ? `/${nonEmptyUrlParts[0]}/` : '/'
       return baseUrl
     }
 
