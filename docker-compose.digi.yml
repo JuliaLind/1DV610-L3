@@ -12,7 +12,7 @@ services:
     volumes:
       - /root/app/auth-server/private.pem:/private.pem:ro
     networks:
-      - network-exr:
+      - network-exr
 
 networks:
-  network-exr:
+  network-exr
