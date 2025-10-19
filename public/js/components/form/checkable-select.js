@@ -2,7 +2,7 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-    @import '../../../css/select.css';
+    @import './css/select.css';
   </style>
 
   <div id="options">

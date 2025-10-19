@@ -2,7 +2,7 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-    @import '../../../css/option.css';
+    @import './css/option.css';
   </style>
 
 <label id="currencyLabel"><input type="checkbox" id="currency" name="currency" value="" /> <slot></slot></label>

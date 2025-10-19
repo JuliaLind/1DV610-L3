@@ -12,7 +12,7 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-    @import '../../../css/form.css';
+    @import './css/form.css';
   </style>
 
 <form part="form" autocomplete="off" method="GET" action="">

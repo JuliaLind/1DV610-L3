@@ -13,8 +13,8 @@ const template = document.createElement('template')
 
 template.innerHTML = `
   <style>
-    @import '../../../css/main.css';
-    @import '../../../css/table.css';
+    @import './css/main.css';
+    @import './css/table.css';
   </style>
 
 <main>
