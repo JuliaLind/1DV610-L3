@@ -17,14 +17,14 @@ template.innerHTML = `
 
 <form part="form" autocomplete="off" method="GET" action="">
     <fieldset>
-        <label>Amount
+        <label><span>Amount</span>
             <input id="amount" name="amount" type="number" inputmode="decimal" step="0.01" placeholder="1500" required />
         </label>
-        <label>Base currency
+        <label><span>Base currency</span>
             <select id="base" name="base" required>
             </select>
         </label>
-        <label>Target currencies (multi-select)
+        <label><span>Target currencies (multi-select)</span>
             <checkable-select id="targets" name="targets" multiple size="10">
             </checkable-select>
         </label>

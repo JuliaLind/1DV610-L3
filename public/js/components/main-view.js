@@ -67,7 +67,7 @@ customElements.define('main-view',
     /**
      * Creates an instance of current class.
      */
-    constructor() {
+    constructor () {
       super()
 
       this.attachShadow({ mode: 'open' })
@@ -79,7 +79,7 @@ customElements.define('main-view',
     /**
      * Called when the element is connected to the DOM. Adds neccessary eventlisteners.
      */
-    async connectedCallback() {
+    async connectedCallback () {
       this.#addEventListeners()
       this.#prepareApiService()
       await this.#prepareForm()
@@ -88,7 +88,7 @@ customElements.define('main-view',
     /**
      * Prepares the ApiService with the correct base URL.
      */
-    #prepareApiService() {
+    #prepareApiService () {
       this.#baseUrl = this.#getBaseUrl()
       this.#apiService = new ApiService(this.#baseUrl)
     }
@@ -98,7 +98,7 @@ customElements.define('main-view',
      *
      * @returns {string} - the baseUrl to use in API requests
      */
-    #getBaseUrl() {
+    #getBaseUrl () {
       const pathAfterHost = window.location.pathname.split('/')
       const nonEmptyUrlParts = pathAfterHost.filter(part => part.length > 0)
       const baseUrl = nonEmptyUrlParts.length > 0 ? `/${nonEmptyUrlParts[0]}/` : '/'
@@ -108,7 +108,7 @@ customElements.define('main-view',
     /**
      * Prepares the form by fetching currencies and rendering options.
      */
-    async #prepareForm() {
+    async #prepareForm () {
       const currencies = await this.#fetchCurrencies()
 
       if (currencies) {
@@ -128,7 +128,7 @@ customElements.define('main-view',
      *
      * @returns {Promise<Array>} - a list of currency objects containing currency name and currency id
      */
-    async #fetchCurrencies() {
+    async #fetchCurrencies () {
       try {
         return await this.#apiService.fetchCurrencies()
       } catch (error) {
@@ -141,7 +141,7 @@ customElements.define('main-view',
      *
      * @param {Error} error - the error object.
      */
-    #handleError(error) {
+    #handleError (error) {
       const errorEvent = new CustomEvent(
         'fetch-error',
         { detail: { message: error.message } }
@@ -200,7 +200,7 @@ customElements.define('main-view',
      *
      * @param {object} results - the conversion results
      */
-    #renderResults(results) {
+    #renderResults (results) {
       const tbody = this.shadowRoot.querySelector('#results tbody')
       tbody.innerHTML = ''
 
@@ -218,7 +218,7 @@ customElements.define('main-view',
     /**
      * Called when the element is removed from the DOM. Removes eventlistener.
      */
-    disconnectedCallback() {
+    disconnectedCallback () {
       this.#abortController.abort()
     }
   })

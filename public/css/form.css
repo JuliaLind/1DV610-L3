@@ -51,3 +51,15 @@ button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
+
+option,
+select,
+input[type="number"] {
+    padding: 0.35em 0.6em;
+    font-size: 1rem;
+}
+
+fieldset > label > span {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
