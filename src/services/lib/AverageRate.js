@@ -6,7 +6,7 @@ import { DeepCloner } from '@jl225vf/exr'
 export class AverageRate {
   #value
   #dates
-  #baseRate = 1
+  #base = 1
 
   /**
    * Creates an instance of AverageRate.
@@ -16,10 +16,6 @@ export class AverageRate {
   constructor (data) {
     this.#setDates(Object.keys(data))
     this.#setValue(Object.values(data))
-  }
-
-  setBaseRate(rate) {
-    this.#baseRate = rate
   }
 
   /**
@@ -51,10 +47,17 @@ export class AverageRate {
    * @returns {number} - the rate as value of 1 NOK in target currency
    */
   #inverse (rate) {
-    return this.#baseRate / this.#round(rate)
+    return this.#base / this.#round(rate)
   }
 
-  #round(amount, decimals = 4) {
+  /**
+   * Rounds a number to specified decimals.
+   *
+   * @param {number} amount - the amount to round
+   * @param {number} decimals - the number of decimals to keep
+   * @returns {number} - the rounded amount
+   */
+  #round (amount, decimals = 4) {
     return Number(amount.toFixed(decimals))
   }
 

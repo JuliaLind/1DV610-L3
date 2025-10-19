@@ -8,7 +8,7 @@ import sinonChai from 'sinon-chai'
 import { app } from '../../src/server.js'
 import { rateFetcher } from '../../src/services/RateService.js'
 
-import { calculateAverage } from '../utils/functions.js'
+import { calculateAverage, round } from '../utils/functions.js'
 
 chai.use(sinonChai)
 const { expect } = chai
@@ -29,6 +29,7 @@ describe('e2e - date', () => {
     fetcherStub.resetBehavior()
   })
 
+
   it('average based on one observation: date/2025-09-19/DKK+EUR', async function () {
     const rates = {
       DKK: {
@@ -42,7 +43,7 @@ describe('e2e - date', () => {
     fetcherStub.resolves(rates)
     const exp = {
       DKK: {
-        value: 1.5637,
+        value: round(1 / 1.5637),
         period: {
           start: '2025-09-19',
           end: '2025-09-19'
@@ -50,7 +51,7 @@ describe('e2e - date', () => {
         observations: 1
       },
       EUR: {
-        value: 11.6705,
+        value: round(1 / 11.6705),
         period: {
           start: '2025-09-19',
           end: '2025-09-19'
