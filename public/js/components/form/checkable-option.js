@@ -30,28 +30,52 @@ customElements.define('checkable-option',
       this.#checkbox = this.shadowRoot.querySelector('input[type="checkbox"]')
     }
 
+    /**
+     * Called when the element is connected to the DOM.
+     * Adds neccessary eventlisteners.
+     */
     connectedCallback () {
       this.#checkbox.addEventListener('change', this.#onChange, { signal: this.#abortController.signal })
     }
 
+    /**
+     * Handles change events on the checkbox.
+     *
+     * @param {Event} event - the change event when checkbox is checked/unchecked
+     */
     #onChange = (event) => {
       this.#toggleChecked()
       this.dispatchEvent(new Event('change', { bubbles: true }))
     }
 
+    /**
+     * Toggles the checked state of the checkable-option .
+     */
     #toggleChecked () {
       if (this.#checkbox.checked) {
-        this.#checked = true
+        this.#check()
         return
       }
 
-      this.#checked = false
+      this.#uncheck()
     }
 
+    /**
+     * Called when the element is disconnected from the DOM.
+     * Cleans up eventlisteners.
+     */
     disconnectedCallback () {
       this.#abortController.abort()
     }
 
+    /**
+     * Overrides the default hasAttribute method.
+     * When checking for 'checked', returns the internal checked state.
+     * Otherwise confirms presence of the actual attribute.
+     *
+     * @param {string} name - name of the attribute to check
+     * @returns {boolean} true if attribute is present, false otherwise
+     */
     hasAttribute (name) {
       switch (name) {
         case 'checked':
@@ -61,6 +85,14 @@ customElements.define('checkable-option',
       }
     }
 
+    /**
+     * Overrides the default hasAttribute method.
+     * When checking for 'checked', returns the internal checked state.
+     * Otherwise returned the value of the actual attribute.
+     *
+     * @param {string} name - name of the attribute to get
+     * @returns {string|null} value of the attribute or null if not present
+     */
     getAttribute (name) {
       switch (name) {
         case 'checked':
@@ -87,20 +119,42 @@ customElements.define('checkable-option',
      * @param {string} newValue - the new value of the changed attribute
      */
     attributeChangedCallback (name, oldValue, newValue) {
+      if (oldValue === newValue) {
+        return
+      }
+
       switch (name) {
         case 'value':
           this.#checkbox.value = newValue
           break
         case 'checked':
           if (newValue !== null) {
-            this.#checked = true
-            this.#checkbox.checked = true
+            this.#check()
             break
           }
 
-          this.#checkbox.checked = false
-          this.#checked = false
+          this.#uncheck()
           break
       }
+    }
+
+    /**
+     * Checks the checkable-option by adding the checked attribute
+     * and updating the internal state.
+     */
+    #check () {
+      this.setAttribute('checked', '')
+      this.#checkbox.checked = true
+      this.#checked = true
+    }
+
+    /**
+     * Unchecks the checkable-option by removing the checked attribute
+     * and updating the internal state.
+     */
+    #uncheck () {
+      this.removeAttribute('checked')
+      this.#checkbox.checked = false
+      this.#checked = false
     }
   })

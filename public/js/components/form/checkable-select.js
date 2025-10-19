@@ -22,7 +22,7 @@ customElements.define(
     /**
      * Creates an instance of checkable select.
      */
-    constructor() {
+    constructor () {
       super()
 
       this.attachShadow({ mode: 'open' })
@@ -33,7 +33,7 @@ customElements.define(
      * Called when the element is connected to the DOM.
      * Adds neccessary eventlisteners.
      */
-    connectedCallback() {
+    connectedCallback () {
       this.addEventListener('change', this.onChange, {
         signal: this.#abortController.signal
       })
@@ -50,7 +50,7 @@ customElements.define(
       if (option) {
         this.#toggleSelection(option)
       }
-      console.log(option)
+
       console.log(this.#selected)
     }
 
@@ -59,7 +59,7 @@ customElements.define(
      *
      * @param {HTMLElement} option - The checkable-option element
      */
-    #toggleSelection(option) {
+    #toggleSelection (option) {
       if (this.#isSelected(option)) {
         this.#select(option)
       } else {
@@ -73,7 +73,7 @@ customElements.define(
      * @param {HTMLElement} option - The checkable-option element
      * @returns {boolean} true if selected, false otherwise
      */
-    #isSelected(option) {
+    #isSelected (option) {
       return option.hasAttribute('checked')
     }
 
@@ -82,7 +82,7 @@ customElements.define(
      *
      * @param {HTMLElement} option - The checkable-option element
      */
-    #unselect(option) {
+    #unselect (option) {
       this.#selected.delete(option.getAttribute('value'))
     }
 
@@ -91,7 +91,7 @@ customElements.define(
      *
      * @param {HTMLElement} option - The checkable-option element
      */
-    #select(option) {
+    #select (option) {
       option.getAttribute('value')
       this.#selected.add(option.getAttribute('value'))
     }
@@ -103,7 +103,7 @@ customElements.define(
      * @param {string} attributeName - The name of the attribute to get
      * @returns {string|Array<string>} The attribute value or selected values
      */
-    getAttribute(attributeName) {
+    getAttribute (attributeName) {
       if (attributeName === 'value') {
         return Array.from(this.#selected)
       }
@@ -115,7 +115,7 @@ customElements.define(
      * Called when the element is disconnected from the DOM.
      * Cleans up eventlisteners.
      */
-    disconnectedCallback() {
+    disconnectedCallback () {
       this.#abortController.abort()
     }
   }
