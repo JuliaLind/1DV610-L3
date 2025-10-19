@@ -143,7 +143,6 @@ export class CurrencyCalculator {
     this.#date = null
   }
 
-
   /**
    * Checks if the cached rates are from today.
    *
@@ -153,8 +152,6 @@ export class CurrencyCalculator {
   hasFreshRates (date) {
     return this.#date === this.#dateToString(date)
   }
-
-
 
   /**
    * Get the converted values of the amount in the target currencies.
@@ -190,7 +187,6 @@ export class CurrencyCalculator {
   hasCachedRates () {
     return Object.keys(this.#rates).length > 0
   }
-
 
   /**
    * Checks if the amount is valid.

@@ -428,6 +428,94 @@ Boken nämner också några regler som inte var direkt relevanta för min kod, t
 
 ## Kapitel 5 - Formatting
 
+Författaren introducerar konceptet vertical formatting och menar att delar som hör ihop också bör ligga nära varandra vertikalt i koden. Ett undantag är instansvariabler, som enligt författaren ska ligga högst upp i klassen. Författaren menar dock att detta inte i praktiken bör frångå den vertikala regeln, eftersom attributen i en väldesignad klass ändå används av merparten av metoderna. Författaren förklarar vidare att om en metod anropar en annan, bör den anropande metoden ligga precis ovanför den anropade. På så sätt får koden ett naturligt flöde uppifrån och ned, där man kan följa logiken utan att söka runt i filen.  
+
+Innan jag läste detta kapitel har jag haft en annan uppfattning om vad som är "rätt ordning" i en klass - jag tänkte att alla publika metoder ska ligga högst upp och att getters och setters bör placeras tillsammans. Men den här regeln ställer till det lite, eftersom att om en setter anropar flera andra metoder (så kallade dependent functions), och dessa i sin tur anropar ytterligare metoder, hamnar motsvarande getter långt ner i klassen.  
+
+Jag har till exempel en klass som tar emot ett dataobjekt i konstruktorn och, utifrån datan, tillsätter olika attribut med hjälp av privata setters. Eftersom flera setters anropas från samma metod, och dessa i sin tur har egna hjälpfunktioner, hamnar gettrarna långt ner i filen, långt ifrån sina respektive setters.  
+
+
+(Jag har exkluderat method docstrings i kodexemplet nedan för att det inte ska bli för långt i readme-filen.)
+
+```js
+  constructor(data, dependencies) {
+    this.#cloner = dependencies?.cloner || new DeepCloner()
+    this.#setBaseCurrency(data)
+    this.#setTargetCurrencies(data)
+    this.#setUnitMultipliers(data)
+    this.#setDates(data)
+    this.#setAllCurrencies()
+  }
+
+
+  #setBaseCurrency(data) {
+    this.#baseCurrency = data.dimensions.series.find(dimension => this.#isBaseCurrency(dimension)).values[0]
+  }
+
+  #isBaseCurrency(dimension) {
+    return dimension.id === 'QUOTE_CUR'
+  }
+
+  #setTargetCurrencies(data) {
+    this.#targetCurrencies = data.dimensions.series.find(dimension => this.#isTargetCurrency(dimension)).values
+  }
+
+  #isTargetCurrency(dimension) {
+    return dimension.id === 'BASE_CUR'
+  }
+
+  #setUnitMultipliers(data) {
+    this.#unitMultipliers = data.attributes.series.find(dimension => this.#isUnitMultipler(dimension)).values
+  }
+
+  #isUnitMultipler(attribute) {
+    return attribute.id === 'UNIT_MULT'
+  }
+
+  #setDates(data) {
+    this.#dates = data.dimensions.observation[0].values.map(dateObject => dateObject.id)
+  }
+
+  #setAllCurrencies() {
+    this.#allCurrencies = this.#cloner.clone([...this.getTargetCurrencies(), this.getBaseCurrency()])
+  }
+
+  getBaseCurrency() {
+    return this.#cloner.clone(this.#baseCurrency)
+  }
+
+  getTargetCurrencies() {
+    return this.#targetCurrencies.map(currency => this.#cloner.clone(currency))
+  }
+
+  getUnitMultipliers() {
+    return this.#cloner.clone(this.#unitMultipliers)
+  }
+
+  getDates() {
+    return this.#cloner.clone(this.#dates)
+  }
+
+  getAllCurrencies() {
+    return this.#allCurrencies
+  }
+
+  getCurrencyIds() {
+    return this.#allCurrencies.map(currency => currency.id)
+  }
+
+  getOneCurrencyId(index) {
+    return this.#allCurrencies[index].id
+  }
+
+
+```
+
+Jag upplever att koden blir lite svårare att överblicka på det här sättet, eftersom det tar längre tid att se vilka attribut som faktiskt går att läsa av utifrån klassen. Samtidigt förstår jag logiken i regeln... att placera publika metoder högst upp underlättar för den som använder klassen, medan att placera submetoder direkt under huvudmetoderna underlättar för den som utvecklar eller felsöker i själva koden.  
+
+
+
+
 ## Kapitel 6
 
 ## Kapitel 7
@@ -440,13 +528,3 @@ Boken nämner också några regler som inte var direkt relevanta för min kod, t
 
 ## Kapitel 11
 
-
-## Notes for later
-
-Jag föredrar när setters och getters ligger nära varandra, men det blev svårt att få ihop det med regeln om att koden ska kunna läsas uppifrån och ner. Om en setter innehåller metoder som i sin tur anropar andra metoder, och dessa ska placeras i tur och ordning, hamnar den tillhörande gettern väldigt långt ner i klassen.
-
-Jag har till exempel en klass som tar emot ett dataobjekt och, utifrån datat, hämtar ut och sätter olika attribut med hjälp av privata setters. Eftersom flera setters anropas från samma metod, och dessa i sin tur har egna submetoder, blir det så att getters hamnar längst ner i klassen. Jag upplever att koden blir lite svårläst på det sättet, eftersom det blir svårt att snabbt se vilka attribut man faktiskt har tillgång till att läsa av.
-
-Samtidigt tycker jag att koden blir mer lättöverskådlig om de publika metoderna alltid ligger högst upp, men då hamnar getters och setters inte nära varandra heller i det fall setters är privata.
-
-Det är svårt att väga dessa alternativ mot varandra, men jag tror att jag föredrar att lägga gettern först, sedan settern, och därefter eventuella submetoder till settern i tur och ordning, även om alla setters anropas från samma publika metod.
