@@ -9,8 +9,6 @@ services:
       BASE_URL: exr
     ports:
       - 5056:3000
-    volumes:
-      - /root/app/auth-server/private.pem:/private.pem:ro
     networks:
       - network-exr
 
