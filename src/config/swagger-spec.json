@@ -1,401 +1,580 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-    "title": "Currency Rates API",
-    "version": "1.0.0",
-    "description": "Exchange-rate endpoints under `/api/v1`. Dates are `YYYY-MM-DD`. Currency codes are 3 uppercase letters (e.g., `SEK`). Multiple currencies are joined with `+` (e.g., `EUR+SEK+PLN`).\n\nErrors return `{ \"status_code\": <int>, \"message\": \"...\" }` with HTTP status matching `status_code`."
-  },
-  "servers": [
-    { "url": "http://localhost:3000/api/v1" },
-    { "url": "https://julia-lnu.duckdns.org/exr/api/v1" }
-  ],
-  "tags": [
-    { "name": "Rates" },
-    { "name": "Currencies" },
-    { "name": "Conversion" }
-  ],
-  "paths": {
-    "/date/{date}/{currencies}": {
-      "get": {
-        "tags": ["Rates"],
-        "summary": "Get rates by date for one or more currencies",
-        "description": "Returns the rate on the specified `date` for each requested currency. Optionally include a number of prior observations using the `observations` query parameter, to return the average rate of the observations.",
-        "parameters": [
-          { "$ref": "#/components/parameters/DateParam" },
-          { "$ref": "#/components/parameters/CurrenciesPathParam" },
-          { "$ref": "#/components/parameters/ObservationsQueryParam" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Rates for the requested date",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/RatesByCurrency" },
-                "examples": {
-                  "example": {
-                    "summary": "Sample response",
-                    "value": {
-                      "DKK": {
-                        "value": 1.5578,
-                        "period": { "start": "2025-09-17", "end": "2025-09-19" },
-                        "observations": 3
-                      },
-                      "RUB": {
-                        "value": 0.0927,
-                        "period": { "start": "2022-02-25", "end": "2022-03-01" },
-                        "observations": 3
-                      },
-                      "EUR": {
-                        "value": 11.6278,
-                        "period": { "start": "2025-09-17", "end": "2025-09-19" },
-                        "observations": 3
-                      }
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Currency Rates API",
+        "version": "1.0.0",
+        "description": "Exchange-rate endpoints under `/api/v1`. \n\n The rates routes provide the values with NOK at base currency, for example 1 NOK = X targetCurrency. \nDates are `YYYY-MM-DD`. Currency codes are 3 uppercase letters (e.g., `SEK`). Multiple currencies are joined with `+` (e.g., `EUR+SEK+PLN`).\n\nErrors return `{ \"status_code\": <int>, \"message\": \"...\" }` with HTTP status matching `status_code`."
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000/api/v1"
+        },
+        {
+            "url": "https://julia-lnu.duckdns.org/exr/api/v1"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Rates"
+        },
+        {
+            "name": "Currencies"
+        },
+        {
+            "name": "Conversion"
+        }
+    ],
+    "paths": {
+        "/date/{date}/{currencies}": {
+            "get": {
+                "tags": [
+                    "Rates"
+                ],
+                "summary": "Get rates by date for one or more currencies",
+                "description": "Returns the rate on the specified `date` for each requested currency. Optionally include a number of prior observations using the `observations` query parameter, to return the average rate of the observations.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/DateParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CurrenciesPathParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/ObservationsQueryParam"
                     }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/period/{startDate}/{endDate}/{currencies}": {
-      "get": {
-        "tags": ["Rates"],
-        "summary": "Get average rates over a period for one or more currencies",
-        "description": "Returns the rate aggregated over the period `[startDate, endDate]` for each requested currency.",
-        "parameters": [
-          { "$ref": "#/components/parameters/StartDateParam" },
-          { "$ref": "#/components/parameters/EndDateParam" },
-          { "$ref": "#/components/parameters/CurrenciesPathParam" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Rates for the requested period",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/RatesByCurrency" },
-                "examples": {
-                  "example": {
-                    "summary": "Sample response",
-                    "value": {
-                      "DKK": {
-                        "value": 1.5612,
-                        "period": { "start": "2025-02-20", "end": "2025-02-26" },
-                        "observations": 5
-                      },
-                      "EUR": {
-                        "value": 11.6454,
-                        "period": { "start": "2025-02-20", "end": "2025-02-26" },
-                        "observations": 5
-                      }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rates for the requested date",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RatesByCurrency"
+                                },
+                                "examples": {
+                                    "example": {
+                                        "summary": "Sample response",
+                                        "value": {
+                                            "DKK": {
+                                                "value": 0.6419,
+                                                "period": {
+                                                    "start": "2025-09-17",
+                                                    "end": "2025-09-19"
+                                                },
+                                                "observations": 3
+                                            },
+                                            "RUB": {
+                                                "value": 10.7875,
+                                                "period": {
+                                                    "start": "2022-02-25",
+                                                    "end": "2022-03-01"
+                                                },
+                                                "observations": 3
+                                            },
+                                            "EUR": {
+                                                "value": 0.086,
+                                                "period": {
+                                                    "start": "2025-09-17",
+                                                    "end": "2025-09-19"
+                                                },
+                                                "observations": 3
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
                     }
-                  }
                 }
-              }
             }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/latest/{currencies}": {
-      "get": {
-        "tags": ["Rates"],
-        "summary": "Get latest rates for one or more currencies",
-        "description": "Returns the latest available rate for each requested currency. Optionally include a number of prior observations using the `observations` query parameter, to get the average rates over the specified period.",
-        "parameters": [
-          { "$ref": "#/components/parameters/CurrenciesPathParam" },
-          { "$ref": "#/components/parameters/ObservationsQueryParam" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Latest rates",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/RatesByCurrency" },
-                "examples": {
-                  "example": {
-                    "summary": "Sample response",
-                    "value": {
-                      "RUB": {
-                        "value": 0.0927,
-                        "period": { "start": "2022-02-25", "end": "2022-03-01" },
-                        "observations": 3
-                      },
-                      "EUR": {
-                        "value": 11.7286,
-                        "period": { "start": "2025-10-15", "end": "2025-10-17" },
-                        "observations": 3
-                      },
-                      "SEK": {
-                        "value": 1.0642,
-                        "period": { "start": "2025-10-15", "end": "2025-10-17" },
-                        "observations": 3
-                      }
+        },
+        "/period/{startDate}/{endDate}/{currencies}": {
+            "get": {
+                "tags": [
+                    "Rates"
+                ],
+                "summary": "Get average rates over a period for one or more currencies",
+                "description": "Returns the rate aggregated over the period `[startDate, endDate]` for each requested currency.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/StartDateParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EndDateParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CurrenciesPathParam"
                     }
-                  }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rates for the requested period",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RatesByCurrency"
+                                },
+                                "examples": {
+                                    "example": {
+                                        "summary": "Sample response",
+                                        "value": {
+                                            "DKK": {
+                                                "value": 0.6405,
+                                                "period": {
+                                                    "start": "2025-02-20",
+                                                    "end": "2025-02-26"
+                                                },
+                                                "observations": 5
+                                            },
+                                            "EUR": {
+                                                "value": 0.0859,
+                                                "period": {
+                                                    "start": "2025-02-20",
+                                                    "end": "2025-02-26"
+                                                },
+                                                "observations": 5
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
                 }
-              }
             }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/convert/{amount}/{baseCurrency}/{targetCurrencies}": {
-      "get": {
-        "tags": ["Conversion"],
-        "summary": "Convert an amount from a base currency into one or more target currencies using the rates from latest known observation.",
-        "parameters": [
-          { "$ref": "#/components/parameters/AmountParam" },
-          { "$ref": "#/components/parameters/BaseCurrencyParam" },
-          { "$ref": "#/components/parameters/TargetCurrenciesParam" }
-        ],
-        "responses": {
-          "200": {
-            "description": "Converted amounts keyed by target currency",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ConvertResponse" },
-                "examples": {
-                  "example": {
-                    "summary": "Sample response",
-                    "value": { "DKK": 67.71, "PLN": 38.49, "EUR": 9.07 }
-                  }
+        },
+        "/latest/{currencies}": {
+            "get": {
+                "tags": [
+                    "Rates"
+                ],
+                "summary": "Get latest rates for one or more currencies",
+                "description": "Returns the latest available rate for each requested currency. Optionally include a number of prior observations using the `observations` query parameter, to get the average rates over the specified period.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/CurrenciesPathParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/ObservationsQueryParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Latest rates",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RatesByCurrency"
+                                },
+                                "examples": {
+                                    "example": {
+                                        "summary": "Sample response",
+                                        "value": {
+                                            "RUB": {
+                                                "value": 10.7875,
+                                                "period": {
+                                                    "start": "2022-02-25",
+                                                    "end": "2022-03-01"
+                                                },
+                                                "observations": 3
+                                            },
+                                            "EUR": {
+                                                "value": 0.0853,
+                                                "period": {
+                                                    "start": "2025-10-15",
+                                                    "end": "2025-10-17"
+                                                },
+                                                "observations": 3
+                                            },
+                                            "SEK": {
+                                                "value": 0.9397,
+                                                "period": {
+                                                    "start": "2025-10-15",
+                                                    "end": "2025-10-17"
+                                                },
+                                                "observations": 3
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
                 }
-              }
             }
-          },
-          "400": { "$ref": "#/components/responses/BadRequest" },
-          "404": { "$ref": "#/components/responses/NotFound" },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    },
-    "/currencies": {
-      "get": {
-        "tags": ["Currencies"],
-        "summary": "List supported currencies",
-        "responses": {
-          "200": {
-            "description": "List of supported currencies",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/CurrencyList" },
-                "examples": {
-                  "example": {
-                    "summary": "Sample response (truncated)",
-                    "value": [
-                      { "id": "AUD", "name": "Australian dollar" },
-                      { "id": "BDT", "name": "Bangladeshi taka" },
-                      { "id": "BGN", "name": "Bulgarian lev" },
-                      { "id": "BRL", "name": "Brazilian real" },
-                      { "id": "BYN", "name": "Belarusian new rouble" },
-                      { "id": "CAD", "name": "Canadian dollar" }
-                    ]
-                  }
+        },
+        "/convert/{amount}/{baseCurrency}/{targetCurrencies}": {
+            "get": {
+                "tags": [
+                    "Conversion"
+                ],
+                "summary": "Convert an amount from a base currency into one or more target currencies using the rates from latest known observation.",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/AmountParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/BaseCurrencyParam"
+                    },
+                    {
+                        "$ref": "#/components/parameters/TargetCurrenciesParam"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Converted amounts keyed by target currency",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConvertResponse"
+                                },
+                                "examples": {
+                                    "example": {
+                                        "summary": "Sample response",
+                                        "value": {
+                                            "DKK": 67.71,
+                                            "PLN": 38.49,
+                                            "EUR": 9.07
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
                 }
-              }
             }
-          },
-          "500": { "$ref": "#/components/responses/ServerError" }
-        }
-      }
-    }
-  },
-  "components": {
-    "parameters": {
-      "DateParam": {
-        "name": "date",
-        "in": "path",
-        "required": true,
-        "description": "Date in `YYYY-MM-DD`",
-        "schema": {
-          "type": "string",
-          "format": "date",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
-        }
-      },
-      "StartDateParam": {
-        "name": "startDate",
-        "in": "path",
-        "required": true,
-        "description": "Start date in `YYYY-MM-DD` (inclusive)",
-        "schema": {
-          "type": "string",
-          "format": "date",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
-        }
-      },
-      "EndDateParam": {
-        "name": "endDate",
-        "in": "path",
-        "required": true,
-        "description": "End date in `YYYY-MM-DD` (inclusive)",
-        "schema": {
-          "type": "string",
-          "format": "date",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
-        }
-      },
-      "CurrenciesPathParam": {
-        "name": "currencies",
-        "in": "path",
-        "required": true,
-        "description": "One or more 3-letter currency codes joined by `+` (e.g., `EUR+SEK+PLN`).",
-        "schema": {
-          "type": "string",
-          "pattern": "^[A-Z]{3}(?:\\+[A-Z]{3})*$"
         },
-        "example": "EUR+SEK+PLN"
-      },
-      "ObservationsQueryParam": {
-        "name": "observations",
-        "in": "query",
-        "required": false,
-        "description": "Number of observations prior to and including the date (for `/date`) or the latest observation (for `/latest`).",
-        "schema": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "example": 3
-      },
-      "AmountParam": {
-        "name": "amount",
-        "in": "path",
-        "required": true,
-        "description": "Amount to convert",
-        "schema": {
-          "type": "number"
-        },
-        "example": 100
-      },
-      "BaseCurrencyParam": {
-        "name": "baseCurrency",
-        "in": "path",
-        "required": true,
-        "description": "Base currency (3-letter code)",
-        "schema": { "$ref": "#/components/schemas/CurrencyCode" },
-        "example": "SEK"
-      },
-      "TargetCurrenciesParam": {
-        "name": "targetCurrencies",
-        "in": "path",
-        "required": true,
-        "description": "One or more 3-letter target currency codes joined by `+` (e.g., `DKK+PLN+EUR`).",
-        "schema": {
-          "type": "string",
-          "pattern": "^[A-Z]{3}(?:\\+[A-Z]{3})*$"
-        },
-        "example": "DKK+PLN+EUR"
-      }
+        "/currencies": {
+            "get": {
+                "tags": [
+                    "Currencies"
+                ],
+                "summary": "List supported currencies",
+                "responses": {
+                    "200": {
+                        "description": "List of supported currencies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurrencyList"
+                                },
+                                "examples": {
+                                    "example": {
+                                        "summary": "Sample response (truncated)",
+                                        "value": [
+                                            {
+                                                "id": "AUD",
+                                                "name": "Australian dollar"
+                                            },
+                                            {
+                                                "id": "BDT",
+                                                "name": "Bangladeshi taka"
+                                            },
+                                            {
+                                                "id": "BGN",
+                                                "name": "Bulgarian lev"
+                                            },
+                                            {
+                                                "id": "BRL",
+                                                "name": "Brazilian real"
+                                            },
+                                            {
+                                                "id": "BYN",
+                                                "name": "Belarusian new rouble"
+                                            },
+                                            {
+                                                "id": "CAD",
+                                                "name": "Canadian dollar"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ServerError"
+                    }
+                }
+            }
+        }
     },
-    "responses": {
-      "BadRequest": {
-        "description": "Bad request",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
-            "examples": {
-              "example": {
-                "value": { "status_code": 400, "message": "Invalid Date Format" }
-              }
-            }
-          }
-        }
-      },
-      "NotFound": {
-        "description": "Missing parameters or resource not found",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
-            "examples": {
-              "example": {
-                "value": { "status_code": 404, "message": "Not found" }
-              }
-            }
-          }
-        }
-      },
-      "ServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": { "$ref": "#/components/schemas/ErrorResponse" },
-            "examples": {
-              "example": {
-                "value": { "status_code": 500, "message": "An unexpected condition was encountered." }
-              }
-            }
-          }
-        }
-      }
-    },
-    "schemas": {
-      "CurrencyCode": {
-        "type": "string",
-        "pattern": "^[A-Z]{3}$",
-        "example": "EUR",
-        "description": "Three-letter ISO currency code"
-      },
-      "RateObservation": {
-        "type": "object",
-        "properties": {
-          "value": { "type": "number", "description": "Exchange rate value" },
-          "period": {
-            "type": "object",
-            "properties": {
-              "start": { "type": "string", "format": "date", "example": "2025-09-17" },
-              "end": { "type": "string", "format": "date", "example": "2025-09-19" }
+    "components": {
+        "parameters": {
+            "DateParam": {
+                "name": "date",
+                "in": "path",
+                "required": true,
+                "description": "Date in `YYYY-MM-DD`",
+                "schema": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
             },
-            "required": ["start", "end"]
-          },
-          "observations": {
-            "type": "integer",
-            "minimum": 1,
-            "description": "Number of observations included in the period/window"
-          }
+            "StartDateParam": {
+                "name": "startDate",
+                "in": "path",
+                "required": true,
+                "description": "Start date in `YYYY-MM-DD` (inclusive)",
+                "schema": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+            },
+            "EndDateParam": {
+                "name": "endDate",
+                "in": "path",
+                "required": true,
+                "description": "End date in `YYYY-MM-DD` (inclusive)",
+                "schema": {
+                    "type": "string",
+                    "format": "date",
+                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                }
+            },
+            "CurrenciesPathParam": {
+                "name": "currencies",
+                "in": "path",
+                "required": true,
+                "description": "One or more 3-letter currency codes joined by `+` (e.g., `EUR+SEK+PLN`).",
+                "schema": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}(?:\\+[A-Z]{3})*$"
+                },
+                "example": "EUR+SEK+PLN"
+            },
+            "ObservationsQueryParam": {
+                "name": "observations",
+                "in": "query",
+                "required": false,
+                "description": "Number of observations prior to and including the date (for `/date`) or the latest observation (for `/latest`).",
+                "schema": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "example": 3
+            },
+            "AmountParam": {
+                "name": "amount",
+                "in": "path",
+                "required": true,
+                "description": "Amount to convert",
+                "schema": {
+                    "type": "number"
+                },
+                "example": 100
+            },
+            "BaseCurrencyParam": {
+                "name": "baseCurrency",
+                "in": "path",
+                "required": true,
+                "description": "Base currency (3-letter code)",
+                "schema": {
+                    "$ref": "#/components/schemas/CurrencyCode"
+                },
+                "example": "SEK"
+            },
+            "TargetCurrenciesParam": {
+                "name": "targetCurrencies",
+                "in": "path",
+                "required": true,
+                "description": "One or more 3-letter target currency codes joined by `+` (e.g., `DKK+PLN+EUR`).",
+                "schema": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{3}(?:\\+[A-Z]{3})*$"
+                },
+                "example": "DKK+PLN+EUR"
+            }
         },
-        "required": ["value", "period", "observations"]
-      },
-      "RatesByCurrency": {
-        "type": "object",
-        "additionalProperties": { "$ref": "#/components/schemas/RateObservation" },
-        "description": "Object keyed by currency code"
-      },
-      "ConvertResponse": {
-        "type": "object",
-        "additionalProperties": { "type": "number" },
-        "description": "Object keyed by target currency code with converted numeric amounts"
-      },
-      "Currency": {
-        "type": "object",
-        "properties": {
-          "id": { "$ref": "#/components/schemas/CurrencyCode" },
-          "name": { "type": "string" }
+        "responses": {
+            "BadRequest": {
+                "description": "Bad request",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        },
+                        "examples": {
+                            "example": {
+                                "value": {
+                                    "status_code": 400,
+                                    "message": "Invalid Date Format"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "Missing parameters or resource not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        },
+                        "examples": {
+                            "example": {
+                                "value": {
+                                    "status_code": 404,
+                                    "message": "Not found"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "ServerError": {
+                "description": "Internal server error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorResponse"
+                        },
+                        "examples": {
+                            "example": {
+                                "value": {
+                                    "status_code": 500,
+                                    "message": "An unexpected condition was encountered."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
-        "required": ["id", "name"]
-      },
-      "CurrencyList": {
-        "type": "array",
-        "items": { "$ref": "#/components/schemas/Currency" }
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "properties": {
-          "status_code": { "type": "integer" },
-          "message": { "type": "string" }
-        },
-        "required": ["status_code", "message"]
-      }
+        "schemas": {
+            "CurrencyCode": {
+                "type": "string",
+                "pattern": "^[A-Z]{3}$",
+                "example": "EUR",
+                "description": "Three-letter ISO currency code"
+            },
+            "RateObservation": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "number",
+                        "description": "Exchange rate value"
+                    },
+                    "period": {
+                        "type": "object",
+                        "properties": {
+                            "start": {
+                                "type": "string",
+                                "format": "date",
+                                "example": "2025-09-17"
+                            },
+                            "end": {
+                                "type": "string",
+                                "format": "date",
+                                "example": "2025-09-19"
+                            }
+                        },
+                        "required": [
+                            "start",
+                            "end"
+                        ]
+                    },
+                    "observations": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "description": "Number of observations included in the period/window"
+                    }
+                },
+                "required": [
+                    "value",
+                    "period",
+                    "observations"
+                ]
+            },
+            "RatesByCurrency": {
+                "type": "object",
+                "additionalProperties": {
+                    "$ref": "#/components/schemas/RateObservation"
+                },
+                "description": "Object keyed by currency code"
+            },
+            "ConvertResponse": {
+                "type": "object",
+                "additionalProperties": {
+                    "type": "number"
+                },
+                "description": "Object keyed by target currency code with converted numeric amounts"
+            },
+            "Currency": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "$ref": "#/components/schemas/CurrencyCode"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ]
+            },
+            "CurrencyList": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/Currency"
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "status_code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "status_code",
+                    "message"
+                ]
+            }
+        }
     }
-  }
 }

@@ -19,9 +19,9 @@ export class RateService {
   }
 
   /**
-   * Calculates average rates from fetched rates.
+   * Calculates average rates from fetched rates, and returns in the form 1 NOK = X targetCurrency.
    *
-   * @param {object} rates - the rates to calculate averages for
+   * @param {object} rates - the rates to calculate averages for in the form 1 targetCurrency = X NOK
    * @returns {object} the average rates
    */
   #calculateAverage (rates) {

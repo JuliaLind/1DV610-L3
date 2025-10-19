@@ -6,6 +6,7 @@ import { DeepCloner } from '@jl225vf/exr'
 export class AverageRate {
   #value
   #dates
+  #baseRate = 1
 
   /**
    * Creates an instance of AverageRate.
@@ -17,13 +18,44 @@ export class AverageRate {
     this.#setValue(Object.values(data))
   }
 
+  setBaseRate(rate) {
+    this.#baseRate = rate
+  }
+
   /**
    * Sets the average value of the rates.
    *
    * @param {object} rates - the exchange rates
    */
   #setValue (rates) {
-    this.#value = this.#sum(rates) / this.#count(rates)
+    const average = this.#calculateAverage(rates)
+    const inversed = this.#inverse(average)
+
+    this.#value = this.#round(inversed)
+  }
+
+  /**
+   * Calculates the average of the rates.
+   *
+   * @param {Array} rates - the exchange rates
+   * @returns {number} - the average of the rates
+   */
+  #calculateAverage (rates) {
+    return this.#sum(rates) / this.#count(rates)
+  }
+
+  /**
+   * Inverses the exchange rate.
+   *
+   * @param {number} rate - the rate as value in NOK of 1 target currency
+   * @returns {number} - the rate as value of 1 NOK in target currency
+   */
+  #inverse (rate) {
+    return this.#baseRate / this.#round(rate)
+  }
+
+  #round(amount, decimals = 4) {
+    return Number(amount.toFixed(decimals))
   }
 
   /**
@@ -93,7 +125,7 @@ export class AverageRate {
    * @returns {number} - the average value of the rates
    */
   getValue () {
-    return Number(this.#value.toFixed(4))
+    return this.#value
   }
 
   /**
