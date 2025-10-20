@@ -513,10 +513,72 @@ Jag har till exempel en klass som tar emot ett dataobjekt i konstruktorn och, ut
 
 Jag upplever att koden blir lite svårare att överblicka på det här sättet, eftersom det tar längre tid att se vilka attribut som faktiskt går att läsa av utifrån klassen. Samtidigt förstår jag logiken i regeln... att placera publika metoder högst upp underlättar för den som använder klassen, medan att placera submetoder direkt under huvudmetoderna underlättar för den som utvecklar eller felsöker i själva koden.  
 
+Författaren nämner Conceptual Affinity, vilket innebär att man kan gruppera metoder som hör ihop konceptuellt – alltså metoder som löser liknande uppgifter eller bygger vidare på samma koncept. Jag har en sådan klass, TypeChecker, som används av DeepCloner-klassen. TypeChecker består av metoder som tar emot ett argument och kontrollerar om värdet är av en viss typ. DeepCloner använder sedan dessa metoder för att avgöra om det objekt som ska klonas innehåller nästlade element, och i så fall på vilket sätt dessa ska itereras.
 
+Även här tog jag bort kommentarerna i kodexemplet för att det inte skulle ta upp för mycket plats i readme-filen. Författaren påpekar att onödiga kommentarer kan bryta den visuella närheten mellan koddelar som hör ihop, och det tycker jag blev väldigt tydligt när jag tog bort dem. Jag upplever att koden blev betydligt mer lättöverskådlig, och den konceptuella gruppering som tidigare "gömdes" av kommentarerna framgår nu mycket tydligare. Jag hoppas därför att vi i framtida kurser själva kan få avgöra hur mycket vår kod behöver kommenteras utan att det påverkar betyget.  
 
+```js
+/**
+ * A utility class for type checking.
+ */
+export class TypeChecker {
+  isPrimitive(value) {
+    return (!(this.isObject(value) || this.isFunction(value))) || this.isNullOrUndefined(value)
+  }
 
-## Kapitel 6
+  isObject(value) {
+    return typeof value === 'object'
+  }
+
+  isFunction(value) {
+    return typeof value === 'function'
+  }
+
+  isNullOrUndefined(value) {
+    return [null, undefined].includes(value)
+  }
+
+  isArray(value) {
+    return Array.isArray(value)
+  }
+
+  isSet(value) {
+    return value instanceof Set
+  }
+
+  isMap(value) {
+    return value instanceof Map
+  }
+
+  isDate(value) {
+    return value instanceof Date
+  }
+}
+```
+
+Författaren nämner också kort den vertikala ordningen - dels att koden ska kunna läsas uppifrån och ned som en berättelse, men också att det som är viktigast bör ligga överst. Det tycker jag ligger i linje med det jag nämnde tidigare, att jag tycker (eller i allafall tänkte så tidigare) att de publika metoderna placeras överst i klassen, i stället för att spridas ut mellan de privata. Samtidigt skulle det förstås innebära att koden inte riktigt kan läsas som en sammanhängande berättelse, vilket gör det svårt att fullt ut följa båda principerna samtidigt. 
+
+Horizontell formattering med korta rader upplever jag blir en naturlig konsekvens av att hålla metoderna korta och extrahera "krånglig kod" till variabler. I Javascript är det dessutom enkelt att fortsätta på nästa rad eftersom kompilatorn fortsätter att tolka sålänge som det som kommer på nästa rad kan tolkas som del av samma uttryck. Det enda stället som jag "bryter" mot regeln och har långa rader är json filen som innehåller datat för swagger - som jag förstås det så kan man inte radbryta i json, i annat fall hade jag förståss gjort det.  
+
+Horizontal formatting med korta rader upplever jag blir en naturlig konsekvens av att hålla metoderna korta och att extrahera längre styckern till variabler. I JavaScript är det dessutom enkelt att fortsätta på nästa rad, eftersom kompilatorn fortsätter att tolka koden så länge det som står på nästa rad kan ses som en del av samma uttryck.   
+
+Det enda tillfället där jag bryter mot den här regeln och använder långa rader är i json-filen som innehåller datat för Swagger. Så som jag förstått det går det inte att radbryta i JSON, i annat fall hade jag självklart gjort det. Till skillnad från andra filtyper radbryter VS Code nämligen inte json-filer automatiskt, vilket gör att filen "åker i sidled" när jag skriver. Det blir därför nästan lika jobbigt att skriva långa rader som att läsa dem.  
+
+Författaren nämner också horizontal spacing och menar att man i ett uttryck som detta  
+
+```js
+b*b - 4*a*c;
+```
+
+kan skippa mellanslagen runt de operatorer som exekveras först, eftersom det enligt författaren gör koden enklare att läsa. Jag håller inte riktigt med, jag tycker nog snarare att det ser konstigt ut och att det blir svårare att urskilja de olika tecknen. Det jag har lärt mig tidigare är att man istället kan lägga till extra parenteser runt dessa delar. Även om det inte påverkar själva beräkningen i dessa fall kan parenteserna göra koden lättare för människor att läsa. Jag tror att det är en bättre lösning än att helt utesluta mellanslag. I min egen kod har jag som sagt följt linterns regler, så mellanslagen finns där de ska vara enligt ESLint:s standard.  
+
+Författaren nämner också horizontal alignment. När jag tidigare studerade PHP minns jag att läraren brukade aligna variabler precis som författaren visar i det första exemplet i boken. Jag försökte till en början följa samma princip, men det blev snabbt omständligt när någon variabel fick ett längre namn och de övriga raderna behövde justeras om. Jag vet inte om det finns något automatiskt verktyg för det...det var i alla fall inget jag använde och till slut blev det för tidskrävande att justera mellanslagen manuellt. Precis som författaren, tycker inte jag heller att det tillför något och har inte använt mig av det i denna uppgiften heller.  
+
+Författaren pratar också om indentering och nämner att vissa väljer att skriva till exempel enrads-ifsatser eller loopar på samma rad, eller utan måsvingar. Denna punkt håller jag helt med författaren om - jag tycker att koden blir svårare att läsa på det sättet. I min egen kod har jag därför alltid med måsvingar och använder alltid flerradsblock, även när det bara är en rad i blocket.  
+
+Författaren tar även upp dummy scopes och menar att dessa bör undvikas. Avsnittet är dock ganska kort och innehåller bara ett kort exempel, så jag är inte helt säker på vad som menas eller varför man skulle vilja använda det. Det är i alla fall inget jag har i min kod.
+
+## Kapitel 6 - Objects and data structures
 
 ## Kapitel 7
 
