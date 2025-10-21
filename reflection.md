@@ -374,7 +374,7 @@ Om jag stöter på kod som kräver eftertanke för att förstå, försöker jag 
 
 ```
 
-Detta följer tydligt författarens princip "Don’t use a comment when you can use a function or a variable."
+Detta följer tydligt författarens princip "Don't use a comment when you can use a function or a variable."
 Ett tydligt metodnamn gör mer nytta än en kommentar.  
 
 Ett annat exempel från min kod där jag försökt skriva tydlig, självdokumenterande kod är:  
@@ -1019,7 +1019,30 @@ Jag har "brottats" med testning i tidigare kurser och har därför ganska bra ko
 
 Jag har även tidigare erfarenhet av att skriva tester i php, i Symfony-projekt med hjälp av PHPUnit, och upplevt att det ramverket inte alls har varit lika flexibelt som JavaScripts testramverk. Jag vet dock inte om det beror på php som språk, på själva testramverket, eller på Symfony som ramverk,  där allt är väldigt inkapslat och restriktivt.
 
-## Kapitel 10
+## Kapitel 10 - Classes
 
-## Kapitel 11
+Det första författaren nämner är att klasser ska vara små, och att första steget för att uppnå det är att säkerställa att varje klass har ett tydligt ansvarsområde (Single Responsibility Principle). Han liknar det vid att ha en verktygslåda med många små fack med tydliga, väldefinierade etiketter, jämfört med några få stora lådor med blandat innehåll.
 
+Som jag nämnt tidigare i rapporten refaktorerade jag koden och gjorde om klasserna DataReader, DataFormatter och FormatHelper, som alla fungerade ganska procedurellt, till Data, Structure, DataSet och Currency. Detta delade upp ansvarsområdena tydligt och gjorde koden både mer läsbar och mer objektorienterad. Hade jag haft mer tid till uppgiften hade jag sannolikt hittat fler ställen där koden kunde delas upp, framför allt bland hybridklasserna som innehåller både logik och accessorer/mutatorer. Men det kräver tid att fundera igenom koden - vad som bör lyftas ut, vad den nya klassen ska heta och vilket ansvar den ska ha. Överlag tycker jag ändå att klasserna är relativt korta och lättöverskådliga, både i L2-modulen (senaste versionen) och i L3-appen.
+
+Författaren tar också upp begreppet cohesion, som bör hållas hög. Ju fler av metoderna som använder samma instansvariabler, desto högre cohesion. I en ideal klass skulle alla metoder använda alla instansvariabler. Mina klasser TypeChecker och DeepCloner bryter mot denna regel, eftersom de inte har några instansvariabler alls utan består av en samling konceptuellt relaterade metoder.  
+
+Jag funderade på om jag skulle kunna följa Strategy Pattern och använda polymorfism för den koden. Tanken var att ersätta TypeChecker samt switch-satsen och de olika submetoderna i DeepCloner med klasserna ArrayCloner, DateCloner, MapCloner, SetCloner och ObjectCloner. Var och en av dessa klasser skulle kunna ha två metoder: isOfType(value), som kontrollerar om värdet är av rätt typ och returnerar en boolean, samt clone(value), som skapar en klon. DeepCloner skulle sedan kunna iterera igenom en lista med dessa klasser:  
+
+
+```js
+
+for (const cloner of this.#cloners) {
+  if (cloner.isOfType(value)) {
+    return cloner.clone(value)
+  }
+}
+return value // primitiv typ eller funktion
+
+```
+
+Detta skulle ligga lite i samma spår som SQL-exemplet som författaren tar upp. Man skulle kunna göra DeepCloner möjlig att utöka genom att låta användaren skapa en egen cloner-klass för egendefinierade typer, och via en set-metod lägga till den längst fram i DeepCloner's lista med cloners som itereras igenom. På så sätt skulle man kunna möjliggöra kloning av andra typer av klasser, till exempel egenskapade custom klasser (som i nuläget returneras som vanliga objekt och därtill med begräsningen att privata delar inte blir kopierade).   
+
+En sådan lösning skulle dessutom bättre följa Open–Closed Principle, eftersom DeepCloner inte längre skulle behöva uppdateras vid varje nytillkommen typ (vilket idag leder till en växande switch-sats). I stället skulle man enkelt kunna lägga till en ny cloner-klass i dess lista över tillgängliga cloners. På sätt och vis skulle denna implementation även följa Dependency Inversion Principle. Det är inte riktigt samma typ av exempel som författaren tar upp i boken med abstrakta klasser, men även här bygger lösningen på abstraktion - DeepCloner bryr sig inte om hur de olika subklasserna implementerar logiken i clone() och isOfType(), utan förutsätter bara att metoderna finns och returnerar förväntade värden.  
+
+Problemet jag upptäckte när jag var halvvägs igenom omskrivningen var att den nuvarande kloningen görs rekursivt -  för varje subelement i ett objekt som klonas anropas DeepCloner's clone-metod igen. Jag fick inte riktigt ihop hur detta skulle fungera i en separat cloner klass, förutom genom att anropa DeepCloner inifrån respektive cloner-klass. Men då skulle det uppstå ett cirkulärt beroende: DeepCloner använder cloner-klasserna, medan cloner-klasserna i sin tur använder DeepCloner för sina element. Jag kände att jag inte hade tillräckligt med tid att hitta en bra lösning kring detta, så jag valde att behålla den befintliga implementationen.  
