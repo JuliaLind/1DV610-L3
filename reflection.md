@@ -714,7 +714,51 @@ Om man följer regeln om att inte anropa metoder på returnerade objekt, och des
 
 Om jag tar Currency-klassen i min kod som exempel så gör den något viktigt (formatterar om sina valutakurser), men den har också två getters, varav den ena enbart returnerar id:t. Jag har svårt att se hur man skulle kunna skriva om koden för att separera dessa delar utan att förlora den konceptuella helheten. Författaren menar att man ska separera business logic från datastrukturen, och att klassen med logiken ska innehålla klassen med datan. Men hur ska då en annan klass (i mitt fall Data) kunna få tillgång till valutans id för att lägga till den i sin mappning av olika valutor? Kanske tänker jag för fyrkantigt, och det finns någon lösning på detta som jag helt enkelt inte kan se framför mig.   
 
-## Kapitel 7
+## Kapitel 7 - Error handling
+
+Författaren tar upp att kastade fel bör ge kontext och att man, utöver stack trace, ska inkludera informativa meddelanden. Han visar också exempel med egna error-klasser i Java. När jag studerade Python brukade jag skapa egna felklasser som ärver från Exception, eftersom det blir både snyggt och tydligt i koden när man kan fånga just den specifika exceptionen:  
+
+```py
+## define custom error class
+class ApiFetchException(Exception):
+    """
+    Base class for exceptions when fetching data from API
+    """
+
+## in another class
+
+try:
+    self.fetch_data_from_api()
+except ApiFetchException as err:
+    self.handle_fetch_exception(err)
+```
+
+Om jag dessutom skapar en ytterligare klass som ärver frn ApiFetchException, till exempel InvalidParametersException, kan jag välja om jag vill fånga enbart det specifika felet eller det mer generella ApiFetchException. Koden blir ren, tydlig och lätt att läsa. Det blir inte lika elegant i JavaScript, där man alltid fångar den generella Error-klassen och därefter måste kontrollera om det fångade objektet är en instans av ett visst fel. Om inte, måste man kasta felet igen, till exempel:  
+
+```js
+class ApiFetchException extends Error {
+  constructor(message) {
+    super(message)
+    this.name = this.constructor.name
+  }
+}
+
+
+// In another class
+try {
+  fetchDataFromApi()
+} catch (err) {
+  if (err instanceof ApiFetchException) {
+    this.handleFetchException(err)
+  } else {
+    throw err; // rethrow if not "right" exception
+  }
+}
+
+```  
+
+Av den anledningen skapar jag aldrig egna felklasser i JavaScript, utan kontrollerar istället felets innehåll på andra sätt, till exempel genom att sätta ett code-attribut på felet. Det blir oavsett mer omständligt i JavaScript jämfört med Python. Att jämföra mot error.message är inget bra alternativ, eftersom meddelandena ofta är långa och dessutom kan förändras under utveckling om jag kommer på en bättre formulering.  
+
 
 ## Kapitel 8
 
