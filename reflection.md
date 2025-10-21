@@ -258,7 +258,7 @@ blev
 
 Jag valde att använda map här eftersom det egentligen inte finns något scenario där BASE_CUR-dimensionen saknas i datan från API:et... om inte all data saknas, förstås, men i det fallet kommer ett fel att kastas redan från klassen som hanterar fetch-requesten till APIet.
 
-I den typ av loop med "early return" som jag hade tidigare uppstår problemet att man efter loopen måste explicit returnera undefined eller kasta ett fel (där det senare alternativet är att föredra enligt samma regel som "Don't return null" i kapitel 7). Jag tycker det blir missvisande eftersom det kan få läsaren att tro att attributet ibland saknas. Funktionellt sett behövs förstås inte något explicit returvärde i form av undefined , eftersom det är vad JavaScript automatiskt returnerar om inget värde anges, men det statiska analysverktyget Scrutinizer, som jag använt i tidigare kurs, brukar påpeka att det är "bad practice" om bara vissa exekveringsvägar av samma metod innehåller en return-sats. Att då använda map istället, kommer runt den problematiken. 
+I den typ av loop med "early return" som jag hade tidigare uppstår problemet att man efter loopen måste explicit returnera undefined eller kasta ett fel (där det senare alternativet är att föredra enligt samma regel som "Don't return null" i kapitel 7). Jag tycker det blir missvisande eftersom det kan få läsaren att tro att attributet ibland saknas. Funktionellt sett behövs förstås inte något explicit returvärde i form av undefined , eftersom det är vad javascript automatiskt returnerar om inget värde anges, men det statiska analysverktyget Scrutinizer, som jag använt i tidigare kurs, brukar påpeka att det är "bad practice" om bara vissa exekveringsvägar av samma metod innehåller en return-sats. Att då använda map istället, kommer runt den problematiken. 
   
 Cloner som används i koden är en egen DeepCloner-klass, som rekursivt gör en deep copy av objektet och alla underobjekt. På så sätt undviker jag sidoeffekter och att data kan modifieras utanför den klass där den hör hemma.  
   
@@ -513,7 +513,7 @@ Jag har till exempel en klass som tar emot ett dataobjekt i konstruktorn och, ut
 
 Jag upplever att koden blir lite svårare att överblicka på det här sättet, eftersom det tar längre tid att se vilka attribut som faktiskt går att läsa av utifrån klassen. Samtidigt förstår jag logiken i regeln... att placera publika metoder högst upp underlättar för den som använder klassen, medan att placera submetoder direkt under huvudmetoderna underlättar för den som utvecklar eller felsöker i själva koden.  
 
-Författaren nämner Conceptual Affinity, vilket innebär att man kan gruppera metoder som hör ihop konceptuellt – alltså metoder som löser liknande uppgifter eller bygger vidare på samma koncept. Jag har en sådan klass, TypeChecker, som används av DeepCloner-klassen. TypeChecker består av metoder som tar emot ett argument och kontrollerar om värdet är av en viss typ. DeepCloner använder sedan dessa metoder för att avgöra om det objekt som ska klonas innehåller nästlade element, och i så fall på vilket sätt dessa ska itereras.
+Författaren nämner Conceptual Affinity, vilket innebär att man kan gruppera metoder som hör ihop konceptuellt - alltså metoder som löser liknande uppgifter eller bygger vidare på samma koncept. Jag har en sådan klass, TypeChecker, som används av DeepCloner-klassen. TypeChecker består av metoder som tar emot ett argument och kontrollerar om värdet är av en viss typ. DeepCloner använder sedan dessa metoder för att avgöra om det objekt som ska klonas innehåller nästlade element, och i så fall på vilket sätt dessa ska itereras.
 
 Även här tog jag bort kommentarerna i kodexemplet för att det inte skulle ta upp för mycket plats i readme-filen. Författaren påpekar att onödiga kommentarer kan bryta den visuella närheten mellan koddelar som hör ihop, och det tycker jag blev väldigt tydligt när jag tog bort dem. Jag upplever att koden blev betydligt mer lättöverskådlig, och den konceptuella gruppering som tidigare "gömdes" av kommentarerna framgår nu mycket tydligare. Jag hoppas därför att vi i framtida kurser själva kan få avgöra hur mycket vår kod behöver kommenteras utan att det påverkar betyget.  
 
@@ -558,9 +558,9 @@ export class TypeChecker {
 
 Författaren nämner också kort den vertikala ordningen - dels att koden ska kunna läsas uppifrån och ned som en berättelse, men också att det som är viktigast bör ligga överst. Det tycker jag ligger i linje med det jag nämnde tidigare, att jag tycker (eller i allafall tänkte så tidigare) att de publika metoderna placeras överst i klassen, i stället för att spridas ut mellan de privata. Samtidigt skulle det förstås innebära att koden inte riktigt kan läsas som en sammanhängande berättelse, vilket gör det svårt att fullt ut följa båda principerna samtidigt. 
 
-Horizontell formattering med korta rader upplever jag blir en naturlig konsekvens av att hålla metoderna korta och extrahera "krånglig kod" till variabler. I Javascript är det dessutom enkelt att fortsätta på nästa rad eftersom kompilatorn fortsätter att tolka sålänge som det som kommer på nästa rad kan tolkas som del av samma uttryck. Det enda stället som jag "bryter" mot regeln och har långa rader är json filen som innehåller datat för swagger - som jag förstås det så kan man inte radbryta i json, i annat fall hade jag förståss gjort det.  
+Horizontell formattering med korta rader upplever jag blir en naturlig konsekvens av att hålla metoderna korta och extrahera "krånglig kod" till variabler. I javascript är det dessutom enkelt att fortsätta på nästa rad eftersom kompilatorn fortsätter att tolka sålänge som det som kommer på nästa rad kan tolkas som del av samma uttryck. Det enda stället som jag "bryter" mot regeln och har långa rader är json filen som innehåller datat för swagger - som jag förstås det så kan man inte radbryta i json, i annat fall hade jag förståss gjort det.  
 
-Horizontal formatting med korta rader upplever jag blir en naturlig konsekvens av att hålla metoderna korta och att extrahera längre styckern till variabler. I JavaScript är det dessutom enkelt att fortsätta på nästa rad, eftersom kompilatorn fortsätter att tolka koden så länge det som står på nästa rad kan ses som en del av samma uttryck.   
+Horizontal formatting med korta rader upplever jag blir en naturlig konsekvens av att hålla metoderna korta och att extrahera längre styckern till variabler. I javascript är det dessutom enkelt att fortsätta på nästa rad, eftersom kompilatorn fortsätter att tolka koden så länge det som står på nästa rad kan ses som en del av samma uttryck.   
 
 Det enda tillfället där jag bryter mot den här regeln och använder långa rader är i json-filen som innehåller datat för Swagger. Så som jag förstått det går det inte att radbryta i JSON, i annat fall hade jag självklart gjort det. Till skillnad från andra filtyper radbryter VS Code nämligen inte json-filer automatiskt, vilket gör att filen "åker i sidled" när jag skriver. Det blir därför nästan lika jobbigt att skriva långa rader som att läsa dem.  
 
@@ -700,7 +700,7 @@ Den här strukturen gör att varje klass ansvarar för sitt eget dataflöde, vil
 
 Författaren tar också upp Law of Demeter och begreppet train wrecks, och menar att det är dålig kodstil att kedja flera anrop i följd, vilket vilket ökar coupling mellan komponenter.
 
-Min spaning är att kedjade anrop känns mycket vanliga i JavaScript, särskilt i moderna bibliotek och ramverk. Fram tills för bara några år sedan, innan async/await blev standard, var det till exempel normalt att kedja then-anrop på promises. Det hade snarare sett märkligt ut att bryta ut varje steg i egna variabler, så som författaren föreslår.   
+Min spaning är att kedjade anrop känns mycket vanliga i javascript, särskilt i moderna bibliotek och ramverk. Fram tills för bara några år sedan, innan async/await blev standard, var det till exempel normalt att kedja then-anrop på promises. Det hade snarare sett märkligt ut att bryta ut varje steg i egna variabler, så som författaren föreslår.   
   
 Samtidigt förstår jag och håller med om tanken bakom regeln, att man inte bör anropa metoder på objekt som returneras av andra, eftersom det bryter inkapslingen. Jag hoppas att jag inte har gjort det i min egen kod. Jag tror inte det, eftersom vi tidigare i utbildningen har diskuterat liknande principer (till exempel att lager i en arkitektur bara ska prata med närmast underliggande lager och inte "hoppa över" ett lager bara för att det är enklare just i det fallet).  
   
@@ -716,7 +716,7 @@ Om jag tar Currency-klassen i min kod som exempel så gör den något viktigt (f
 
 ## Kapitel 7 - Error handling
 
-Författaren tar upp att kastade fel bör ge kontext och att man, utöver stack trace, ska inkludera informativa meddelanden. Han visar också exempel med egna error-klasser i Java. När jag studerade Python brukade jag skapa egna felklasser som ärver från Exception, eftersom det blir både snyggt och tydligt i koden när man kan fånga just den specifika exceptionen:  
+Författaren tar upp att kastade fel bör ge kontext och att man, utöver stack trace, ska inkludera informativa meddelanden. Han visar också exempel med egna error-klasser i java. När jag studerade Python brukade jag skapa egna felklasser som ärver från Exception, eftersom det blir både snyggt och tydligt i koden när man kan fånga just den specifika exceptionen:  
 
 ```py
 ## define custom error class
@@ -733,7 +733,7 @@ except ApiFetchException as err:
     self.handle_fetch_exception(err)
 ```
 
-Om jag dessutom skapar en ytterligare klass som ärver frn ApiFetchException, till exempel InvalidParametersException, kan jag välja om jag vill fånga enbart det specifika felet eller det mer generella ApiFetchException. Koden blir ren, tydlig och lätt att läsa. Det blir inte lika elegant i JavaScript, där man alltid fångar den generella Error-klassen och därefter måste kontrollera om det fångade objektet är en instans av ett visst fel. Om inte, måste man kasta felet igen, till exempel:  
+Om jag dessutom skapar en ytterligare klass som ärver frn ApiFetchException, till exempel InvalidParametersException, kan jag välja om jag vill fånga enbart det specifika felet eller det mer generella ApiFetchException. Koden blir ren, tydlig och lätt att läsa. Det blir inte lika elegant i javascript, där man alltid fångar den generella Error-klassen och därefter måste kontrollera om det fångade objektet är en instans av ett visst fel. Om inte, måste man kasta felet igen, till exempel:  
 
 ```js
 class ApiFetchException extends Error {
@@ -757,7 +757,7 @@ try {
 
 ```  
 
-Av den anledningen skapar jag aldrig egna felklasser i JavaScript, utan kontrollerar istället felets innehåll på andra sätt, till exempel genom att sätta ett code-attribut på felet. Det blir oavsett mer omständligt i JavaScript jämfört med Python. Att jämföra mot error.message är inget bra alternativ, eftersom meddelandena ofta är långa och dessutom kan förändras under utveckling om jag kommer på en bättre formulering.  
+Av den anledningen skapar jag aldrig egna felklasser i javascript, utan kontrollerar istället felets innehåll på andra sätt, till exempel genom att sätta ett code-attribut på felet. Det blir oavsett mer omständligt i javascript jämfört med Python. Att jämföra mot error.message är inget bra alternativ, eftersom meddelandena ofta är långa och dessutom kan förändras under utveckling om jag kommer på en bättre formulering.  
 
 Författaren tar upp att man inte ska skicka in null som argument. Den regeln bryter jag mot på ett ställe, i TypeChecker-klassen. Det tycker jag dock är motiverat, eftersom det just är syftet med metoden: att ta reda på om ett element är null eller undefined, vilket i sin tur påverkar hur elementet ska kopieras av DeepCloner om det ligger i en datastruktur som ska klonas:  
 
@@ -862,7 +862,7 @@ export class RateService {
 
 På ett sätt bryter detta mot inkapslingen, men det är nödvändigt för att kunna testa restAPI-routningen med samma instans av fetcher som används av den server som testas för att göra testerna helt oberoende av L2 modulen.  
 
-Jag gillar författarens approach i log4j-exemplet. Det är ett betydligt smartare sätt att testa tredjepartsmoduler i Node än att “console-logga sig fram”, vilket jag ofta gör eftersom jag är för otålig för att sätta mig in i dokumentationen. Med learning tests skulle jag istället kunna pröva mig fram på ett mer strukturerat sätt och samtidigt behålla historiken över vad jag faktiskt har testat, både för att snabbt kunna sätta mig in i modulen igen om jag skulle behöva använda den igen i framtiden, men också för att enklare upptäcka eventuella förändringar i framtida versioner av tredjepartsmodulen. Och det är precis det författaren beskriver i avsnittet Learning Tests Are Better Than Free. Han menar att det publika gränssnittet i ett tredjeparts-API bör testas på exakt samma sätt som modulen används i produktionskoden, för att säkerställa att vi upptäcker om förändringar i modulen gör den inkompatibel med vår egen kod.  
+Jag gillar författarens approach i log4j-exemplet. Det är ett betydligt smartare sätt att testa tredjepartsmoduler i Node än att "console-logga sig fram", vilket jag ofta gör eftersom jag är för otålig för att sätta mig in i dokumentationen. Med learning tests skulle jag istället kunna pröva mig fram på ett mer strukturerat sätt och samtidigt behålla historiken över vad jag faktiskt har testat, både för att snabbt kunna sätta mig in i modulen igen om jag skulle behöva använda den igen i framtiden, men också för att enklare upptäcka eventuella förändringar i framtida versioner av tredjepartsmodulen. Och det är precis det författaren beskriver i avsnittet Learning Tests Are Better Than Free. Han menar att det publika gränssnittet i ett tredjeparts-API bör testas på exakt samma sätt som modulen används i produktionskoden, för att säkerställa att vi upptäcker om förändringar i modulen gör den inkompatibel med vår egen kod.  
 
 En annan idé som författaren tar upp, som inte direkt var relevant för min nuvarande kod men som jag tror kan bli användbar längre fram i kursen, särskilt när man bygger större system i team, är att skapa ett "fejk interface" att arbeta mot. När det faktiska interfacet sedan blir känt kan man bygga en adapter som kopplar ihop den egna koden med det riktiga interfacet. Genom att använda en egen adapter får man dessutom full kontroll över hur mycket arbete som kommer att krävas om API:ets publika gränssnitt skulle förändras.  
 
@@ -878,7 +878,7 @@ Att end-to-end-testa i stället för att enhetstesta har dessutom en tydlig för
 
 Författaren lyfter vikten av att hålla testsuiten ren genom att följa Clean Code-principerna även i testkoden, och att inte betrakta tester som "andrahandsmedborgare". Där är jag nog själv skyldig, framför allt när det gäller duplicerad kod. Inom samma testsuite har jag försökt återanvända koddelar, men mellan olika suites finns det med stor sannolikhet återkommande kodstycken. Det har främst berott på tidsbrist - jag har arbetat med en testsuite i taget och inte gått tillbaka till den efteråt, om det inte varit så att jag gjort ändringar i den relaterade "riktiga" koden.  
 
-I huvudsak följer jag dock BUILD–OPERATE–CHECK-mönstret (eller som jag lärde mig under tidigare kurs i Python: arrange → act → assert). Till exempel:  
+I huvudsak följer jag dock BUILD-OPERATE-CHECK-mönstret (eller som jag lärde mig under tidigare kurs i Python: arrange → act → assert). Till exempel:  
 
 ```js
   it('Convert from SEK to PLN and EUR', async function () {
@@ -952,7 +952,7 @@ Det är dock inte alla mina tester som är lika renodlade. Även om jag vet att 
 
 Här fungerar den första asserten mest som kontext, för att tydliggöra att det fanns cachade valutakurser innan nya valutor tillsätts, vilket gör det tydligare att cachen rensas som en konsekvens av att nya valutor tillsätts. Författaren tar inte upp just denna anledningen, men han nämner ett annat exempel där flera asserts i samma test är att föredra (t ex föra att undvika duplicerad kod).  
 
-Författaren menar även att det är viktigare att följa regeln om ett koncept per testfunktion – det vill säga att man testar saker som hör ihop. Den regeln tror jag att jag följer ganska bra faktiskt. Till exempel i följande test:  
+Författaren menar även att det är viktigare att följa regeln om ett koncept per testfunktion - det vill säga att man testar saker som hör ihop. Den regeln tror jag att jag följer ganska bra faktiskt. Till exempel i följande test:  
 
 ```js
     it('new fromCurrency is different from current', () => {
@@ -1017,7 +1017,7 @@ Som tidigare nämnt hade jag helst skrivit testerna parallellt med koden, men ja
 
 Jag har "brottats" med testning i tidigare kurser och har därför ganska bra koll på vad som går att testa. Därför skriver jag kod med testbarhet som utgångspunkt, bland annat använder jag i princip alltid dependency injection i constructorerna. Därtill har javascript väldigt tacksamma testramverk att arbeta i, där i princip allt går att mocka och testa.
 
-Jag har även tidigare erfarenhet av att skriva tester i php, i Symfony-projekt med hjälp av PHPUnit, och upplevt att det ramverket inte alls har varit lika flexibelt som JavaScripts testramverk. Jag vet dock inte om det beror på php som språk, på själva testramverket, eller på Symfony som ramverk,  där allt är väldigt inkapslat och restriktivt.
+Jag har även tidigare erfarenhet av att skriva tester i php, i Symfony-projekt med hjälp av PHPUnit, och upplevt att det ramverket inte alls har varit lika flexibelt som javascripts testramverk. Jag vet dock inte om det beror på php som språk, på själva testramverket, eller på Symfony som ramverk,  där allt är väldigt inkapslat och restriktivt.
 
 ## Kapitel 10 - Classes
 
@@ -1043,6 +1043,14 @@ return value // primitiv typ eller funktion
 
 Detta skulle ligga lite i samma spår som SQL-exemplet som författaren tar upp. Man skulle kunna göra DeepCloner möjlig att utöka genom att låta användaren skapa en egen cloner-klass för egendefinierade typer, och via en set-metod lägga till den längst fram i DeepCloner's lista med cloners som itereras igenom. På så sätt skulle man kunna möjliggöra kloning av andra typer av klasser, till exempel egenskapade custom klasser (som i nuläget returneras som vanliga objekt och därtill med begräsningen att privata delar inte blir kopierade).   
 
-En sådan lösning skulle dessutom bättre följa Open–Closed Principle, eftersom DeepCloner inte längre skulle behöva uppdateras vid varje nytillkommen typ (vilket idag leder till en växande switch-sats). I stället skulle man enkelt kunna lägga till en ny cloner-klass i dess lista över tillgängliga cloners. På sätt och vis skulle denna implementation även följa Dependency Inversion Principle. Det är inte riktigt samma typ av exempel som författaren tar upp i boken med abstrakta klasser, men även här bygger lösningen på abstraktion - DeepCloner bryr sig inte om hur de olika subklasserna implementerar logiken i clone() och isOfType(), utan förutsätter bara att metoderna finns och returnerar förväntade värden.  
+En sådan lösning skulle dessutom bättre följa Open-Closed Principle, eftersom DeepCloner inte längre skulle behöva uppdateras vid varje nytillkommen typ (vilket idag leder till en växande switch-sats). I stället skulle man enkelt kunna lägga till en ny cloner-klass i dess lista över tillgängliga cloners. På sätt och vis skulle denna implementation även följa Dependency Inversion Principle. Det är inte riktigt samma typ av exempel som författaren tar upp i boken med abstrakta klasser, men även här bygger lösningen på abstraktion - DeepCloner bryr sig inte om hur de olika subklasserna implementerar logiken i clone() och isOfType(), utan förutsätter bara att metoderna finns och returnerar förväntade värden.  
 
 Problemet jag upptäckte när jag var halvvägs igenom omskrivningen var att den nuvarande kloningen görs rekursivt -  för varje subelement i ett objekt som klonas anropas DeepCloner's clone-metod igen. Jag fick inte riktigt ihop hur detta skulle fungera i en separat cloner klass, förutom genom att anropa DeepCloner inifrån respektive cloner-klass. Men då skulle det uppstå ett cirkulärt beroende: DeepCloner använder cloner-klasserna, medan cloner-klasserna i sin tur använder DeepCloner för sina element. Jag kände att jag inte hade tillräckligt med tid att hitta en bra lösning kring detta, så jag valde att behålla den befintliga implementationen.  
+
+## Kapitel 11 - Systems  
+
+Författaren pratar om vikten av att separera (separation of concerns) skapandet av objekt (construction) från användningen av dem (use), och nämner bland annat Dependency Injection som en kraftfull mekanism för att uppnå detta. Det här är något jag, som nämnt tidigare, redan använder som min standardlösning, eftersom det säkerställer att beroenden enkelt kan mockas vid testning och fungerar även i språk som är mer "strikta" än javascript.
+
+Efter att ha läst kapitel 2 har jag dessutom börjat med en ny rutin - att skicka in ett dependencies-objekt, som är en datastruktur som innehåller alla beroenden. Det gör det enkelt att lägga till nya beroenden när kod extraheras till subklasser, utan att öka antalet parametrar i konstruktorn.
+
+Resten av kapitel 11 upplevde jag som ganska svår att ta till mig. Jag fick intrycket av att de problem och lösningar som tas upp där främst är relaterade till mer statiskt typade språk som java, snarare än till dynamiska språk som javascript. Jag tror att den nämnda problematiken beror på att java är ett språk där man arbetar med kompilering och strikta typer, vilket gör frågor kring hur systemet konstrueras och kopplas ihop (wiring, construction, dependency resolution) mer komplexa. Därför behövs de nämnda ramverken för att hantera dependency injection, aspect-oriented programming (AOP) och liknande mekanismer föratt lyfta den bördan från programmeraren som skriver produktionskoden. I javascript däremot sker det mesta dynamiskt vid körning, och man kan enkelt skapa och injicera beroenden utan behov av särskilda containrar eller XML-konfigurationsfiler. De principer som författaren beskriver, såsom separation av ansvar och beroendeinjektion, är dock lika giltiga i javascript, men implementeringen är inte alls lika komplicerad.
