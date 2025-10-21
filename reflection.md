@@ -866,7 +866,158 @@ Jag gillar författarens approach i log4j-exemplet. Det är ett betydligt smarta
 
 En annan idé som författaren tar upp, som inte direkt var relevant för min nuvarande kod men som jag tror kan bli användbar längre fram i kursen, särskilt när man bygger större system i team, är att skapa ett "fejk interface" att arbeta mot. När det faktiska interfacet sedan blir känt kan man bygga en adapter som kopplar ihop den egna koden med det riktiga interfacet. Genom att använda en egen adapter får man dessutom full kontroll över hur mycket arbete som kommer att krävas om API:ets publika gränssnitt skulle förändras.  
 
-## Kapitel 9 - Unittests
+## Kapitel 9 - Unittests  
+
+Jag gillar att testa min kod. Om jag hade haft mer tid hade jag gärna skrivit enhetstester helt isolerat för varje liten del, integrationstester mellan alla delar, samt e2e-tester där hela kedjan testas från början till slut. Jag hade dessutom gärna arbetat med test-driven development (TDD) och skrivit enhetstester parallellt med själva koden. Tyvärr har tiden inte riktigt räckt till, så jag har fått prioritera.  
+
+Överlag har jag dock hög kodtäckning. I L2 hade jag tidigare 100%-ig kodtäckning, men den har sjunkit till runt 90% efter refaktoreringen. Dessutom är det inte längre renodlade enhetstester -  på de ställen där koden har brutits ut i subklasser har jag inte delat upp testkoden med tydliga avgränsningar, utan istället testat submodulerna genom huvudmodulens tester. Jag har resonerat som så att om något av dessa tester skulle faila, kan man i efterhand lägga till separata enhetstester för just de delar som berörs.  
+
+I L3 har jag i stället prioriterat att testa helheten, med motsvarande grundtanke - att om helheten inte fungerar, lägger jag till mer detaljerade tester vid behov. Eftersom det inte handlar om ett kritiskt system har jag bedömt att eventuella mindre buggar kan åtgärdas i efterhand.
+
+Att end-to-end-testa i stället för att enhetstesta har dessutom en tydlig fördel under utvecklingsfasen: man kan ändra den interna strukturen fritt utan att behöva uppdatera ett stort antal enhetstester. Med enhetstester (även om om samtliga beroenden är mockade) krävs ofta uppdateringar på flera ställen - till exempel byter namn på en klass eller en publik metod så måste man uppdatera namnet även på "mocken". Å andra sidan tar e2e tester lngre tid att exekvera än enhetstester så om man har många olika vägar genom koden (alltså if/else, try/catch) så är enhetstester förstås bättre (för att bla för a Fast i F.I.R.S.T principen) och minskar antal testfall som behövs för att testa precis alla kombinationer av "vägar". 
+
+Författaren lyfter vikten av att hålla testsuiten ren genom att följa Clean Code-principerna även i testkoden, och att inte betrakta tester som "andrahandsmedborgare". Där är jag nog själv skyldig, framför allt när det gäller duplicerad kod. Inom samma testsuite har jag försökt återanvända koddelar, men mellan olika suites finns det med stor sannolikhet återkommande kodstycken. Det har främst berott på tidsbrist - jag har arbetat med en testsuite i taget och inte gått tillbaka till den efteråt, om det inte varit så att jag gjort ändringar i den relaterade "riktiga" koden.  
+
+I huvudsak följer jag dock BUILD–OPERATE–CHECK-mönstret (eller som jag lärde mig under tidigare kurs i Python: arrange → act → assert). Till exempel:  
+
+```js
+  it('Convert from SEK to PLN and EUR', async function () {
+    const converted = {
+      PLN: 134.78,
+      EUR: 31.62
+
+    }
+
+    converterStub.resolves(converted)
+
+    await request(app)
+      .get('/api/v1/convert/350/SEK/PLN+EUR')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .expect(({ body }) => {
+        expect(body).to.deep.equal(converted)
+      })
+
+    expect(converterStub).to.have.been.calledWith(350)
+  })
+```
+
+Här motsvarar  
+
+1. BUILD (arrange)
+
+```js
+    const converted = {
+      PLN: 134.78,
+      EUR: 31.62
+
+    }
+
+    converterStub.resolves(converted)
+```
+2. OPERATE (act)
+
+```js
+    await request(app)
+      .get('/api/v1/convert/350/SEK/PLN+EUR')
+      .expect(200)
+      .expect('Content-Type', /json/)
+      .expect(({ body }) => {
+        expect(body).to.deep.equal(converted)
+      })
+```
+3. CHECK (assert)
+
+```js
+    expect(converterStub).to.have.been.calledWith(350)
+```
+
+Det är dock inte alla mina tester som är lika renodlade. Även om jag vet att en enhetstest i idealfallet bara bör innehålla en assert, vilket även författaren av Clean Code lyfter, tycker jag ibland att flera asserts kan göra testet mer tydligt och ge bättre kontext. Till exempel i följande test:  
+
+```js
+    it('previously set, changed OK', () => {
+      const calculator = new CurrencyCalculator()
+
+      calculator.setTargetCurrencies(['USD', 'EUR'])
+      calculator.setRates(rates)
+
+      expect(calculator.hasCachedRates()).to.be.true
+
+      calculator.setTargetCurrencies(['USD', 'EUR', 'PLN'])
+      expect(calculator.getTargetCurrencies()).to.deep.equal(['USD', 'EUR', 'PLN'])
+      expect(calculator.hasCachedRates()).to.be.false
+    })
+
+```
+
+Här fungerar den första asserten mest som kontext, för att tydliggöra att det fanns cachade valutakurser innan nya valutor tillsätts, vilket gör det tydligare att cachen rensas som en konsekvens av att nya valutor tillsätts. Författaren tar inte upp just denna anledningen, men han nämner ett annat exempel där flera asserts i samma test är att föredra (t ex föra att undvika duplicerad kod).  
+
+Författaren menar även att det är viktigare att följa regeln om ett koncept per testfunktion – det vill säga att man testar saker som hör ihop. Den regeln tror jag att jag följer ganska bra faktiskt. Till exempel i följande test:  
+
+```js
+    it('new fromCurrency is different from current', () => {
+      const ratefetcher = sinon.stub()
+      const rateNormalizer = {
+        reset: sinon.stub()
+      }
+      const sut = new CurrencyConverter({ fetcher: ratefetcher, normalizer: rateNormalizer })
+      sut.setBaseCurrency('EUR')
+      sut.setBaseCurrency('USD')
+
+      expect(sut.getBaseCurrency()).to.equal('USD')
+      expect(rateNormalizer.reset).to.have.been.calledOnce
+    })
+
+```
+
+Här har jag två asserts, men de hänger ihop eftersom det är ändringen av basvalutan som leder till att tidigare satta valutakurser i normalizern nollställs.  
+
+### F.I.R.S.T
+
+Överlag följer min testsuite F.I.R.S.T.-principen. 
+
+
+#### Fast
+Även om end-to-end-tester normalt tar längre tid än enhetstester gör de inte det i min testsuite (testverktyget brukar färgmarkera tester som tar lång tid att exekvera).  
+
+#### Independent
+Varje test är oberoende av andra tester. Genom att använda before, beforeEach, after och afterEach säkerställer jag att varje test utgår från ett specifikt tillstånd och att det rensas upp efteråt. Samma variabler återanvänds endast mellan tester om det gäller element som inte förändras under testningen. Om ett element ändras skapas det istället i själva testmetoden. Till exempel:
+
+```js
+
+  it('hasCachedRates() returns false when no rates are set', () => {
+    const sut = new RateNormalizer()
+    const res = sut.hasCachedRates()
+
+    expect(res).to.be.false
+  })
+
+  it('hasCachedRates() returns true when rates are set', () => {
+    const sut = new RateNormalizer()
+    sut.setBaseCurrency('EUR')
+    sut.setTargetCurrencies(['DKK', 'PLN', 'SEK'])
+    sut.normalize(rates)
+    const res = sut.hasCachedRates()
+
+    expect(res).to.be.true
+  })
+  ```
+
+Här skapas en ny RateNormalizer instans i varje test för att ha full kontroll över utgångsläget i "system under test".
+
+#### Repeatable:
+Eftersom testerna inte använder systemets faktiska tillstånd går de att upprepa oberoende av miljö.
+
+#### Self-validating:
+
+Detta ser jag som en självklarhet och att det är just detta som skiljer automatiska tester från att skriva egna "testprogram" som console-loggar till konsolen.  
+
+#### Timely:
+Som tidigare nämnt hade jag helst skrivit testerna parallellt med koden, men jag var orolig att inte hinna färdigställa applikationen och skrev därför testerna i efterhand. Författaren menar att om man gör på det sättet  riskerar man att i efterhand upptäcka att koden är svårtestad, men det problemet har jag inte upplevt i min app. De delar som inte är testtäckta beror helt och hållet på tidsbrist, inte på att de skulle vara svårtestade.
+
+Jag har "brottats" med testning i tidigare kurser och har därför ganska bra koll på vad som går att testa. Därför skriver jag kod med testbarhet som utgångspunkt, bland annat använder jag i princip alltid dependency injection i constructorerna. Därtill har javascript väldigt tacksamma testramverk att arbeta i, där i princip allt går att mocka och testa.
+
+Jag har även tidigare erfarenhet av att skriva tester i php, i Symfony-projekt med hjälp av PHPUnit, och upplevt att det ramverket inte alls har varit lika flexibelt som JavaScripts testramverk. Jag vet dock inte om det beror på php som språk, på själva testramverket, eller på Symfony som ramverk,  där allt är väldigt inkapslat och restriktivt.
 
 ## Kapitel 10
 
