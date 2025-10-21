@@ -576,9 +576,143 @@ Författaren nämner också horizontal alignment. När jag tidigare studerade PH
 
 Författaren pratar också om indentering och nämner att vissa väljer att skriva till exempel enrads-ifsatser eller loopar på samma rad, eller utan måsvingar. Denna punkt håller jag helt med författaren om - jag tycker att koden blir svårare att läsa på det sättet. I min egen kod har jag därför alltid med måsvingar och använder alltid flerradsblock, även när det bara är en rad i blocket.  
 
-Författaren tar även upp dummy scopes och menar att dessa bör undvikas. Avsnittet är dock ganska kort och innehåller bara ett kort exempel, så jag är inte helt säker på vad som menas eller varför man skulle vilja använda det. Det är i alla fall inget jag har i min kod.
+Författaren tar även upp dummy scopes och menar att dessa bör undvikas. Avsnittet är dock ganska kort och innehåller bara ett enkelt exempel, så jag är inte helt säker på i vilka situationer man i praktiken skulle behöva använda tomma scopes som inte hade kunnat lösas på ett annat sätt. Det är i alla fall inget jag har i min kod.  
 
 ## Kapitel 6 - Objects and data structures
+
+När jag läste detta kapitel insåg jag att det inte är så enkelt att skriva objektorienterad kod som att bara skapa klasser och instanser av dem. Särskilt detta stycke fick mig att stanna upp och fundera:
+
+"Procedural code makes it hard to add new data structures because all the functions must change. OO code makes it hard to add new functions because all the classes must change."
+
+Det fick mig att inse att delar av min kod kanske ändå hade procedurella inslag. Men min modul från L2 är nog mindre procedurell nu än den var vid förra inlämningen.  
+
+Tidigare hade jag exempelvis en klass DataReader som i varje metod tog emot ett dataobjekt (det som returneras från Norges API) och extraherade specifika delar. DataReader använde DataFormatter för att formatera om datan till ett mer användbart format, men egentligen var resultatet fortfarande en enkel datastruktur.
+
+I refaktoreringen tog jag bort dessa två klasser och ersatte dem med en Data-klass. Data består i sin tur av två andra klasser, Structure och DataSet, samt ytterligare en klass, Currency. Var och en av dessa ansvarar för att formatera sin egen data och returnera olika delar via getters. Efter refaktoreringen upplevde jag koden som mycket enklare att läsa och förstå än tidigare.
+
+Hade vi haft mer tid tror jag att ännu fler delar hade kunnat skrivas om på samma sätt, men det kräver en del eftertanke att hitta den rätta balansen mellan objektorienterad struktur och enkelhet.
+
+```js
+
+/**
+ * Class representing a currency and its exchange rate observations.
+ */
+export class Currency {
+  #id
+  #observations = {}
+  #datedRates = {}
+  #attributes
+  #denominator
+  #dates
+  #multipliers
+
+  constructor (data) {
+    this.#id = data.id
+    this.#observations = data.observations
+    this.#attributes = data.attributes
+    this.#dates = data.dates
+    this.#multipliers = data.multipliers
+  }
+
+  getId () {
+    return this.#id
+  }
+
+  getRates () {
+    if (!this.#isFormatted()) {
+      this.#format()
+    }
+
+    return this.#datedRates
+  }
+
+  #isFormatted () {
+    return Object.keys(this.#observations).length === Object.keys(this.#datedRates).length
+  }
+
+  #format () {
+    this.#setDenominator()
+    const dateIndices = this.#getDateIndices()
+
+    for (const index in dateIndices) {
+      this.#datedRates[this.#getObservationDate(dateIndices[index])] = this.#getObservedValue(index)
+    }
+  }
+
+  #setDenominator () {
+    const multiplierIndex = this.#attributes[0]
+    const powerOf = Number(this.#multipliers[multiplierIndex].id)
+
+    this.#denominator = 10 ** powerOf
+  }
+
+  #getDateIndices () {
+    return Object.keys(this.#observations)
+  }
+
+  #getObservationDate (dateIndex) {
+    return this.#dates[Object.keys(this.#dates)[dateIndex]]
+  }
+
+  #getObservedValue (dateIndex) {
+    const observationValue = Number(Object.values(this.#observations)[dateIndex])
+
+    return round(observationValue / this.#denominator, 4)
+  }
+}
+
+```
+och så här använder Data-klassen Currency-klassen:
+
+```js
+  /**
+   * Rearrange the data into a more usable structure.
+   */
+  #formatAll () {
+    const rateSeriesCount = this.#dataSet.countSeries()
+
+    for (let currencyIndex = 0; currencyIndex < rateSeriesCount; currencyIndex++) {
+      this.#formatOne(currencyIndex)
+    }
+  }
+
+  /**
+   * Formats data for one currency.
+   *
+   * @param {number} currencyIndex - The index of the currency to format.
+   */
+  #formatOne (currencyIndex) {
+    const currencyRates = this.#dataSet.getOneRateSeries(currencyIndex)
+
+    const currency = new Currency({
+      ...currencyRates,
+      dates: this.#structure.getDates(),
+      multipliers: this.#structure.getUnitMultipliers(),
+      id: this.#structure.getOneCurrencyId(currencyIndex)
+    })
+
+    this.#rates[currency.getId()] = currency.getRates()
+  }
+
+  ```  
+
+Den här strukturen gör att varje klass ansvarar för sitt eget dataflöde, vilket ligger i linje med kapitlets resonemang om dataabstraktion.. att objekt ska dölja sin interna representation och exponera tydliga gränssnitt i stället för data.  
+
+Författaren tar också upp Law of Demeter och begreppet train wrecks, och menar att det är dålig kodstil att kedja flera anrop i följd, vilket vilket ökar coupling mellan komponenter.
+
+Min spaning är att kedjade anrop känns mycket vanliga i JavaScript, särskilt i moderna bibliotek och ramverk. Fram tills för bara några år sedan, innan async/await blev standard, var det till exempel normalt att kedja then-anrop på promises. Det hade snarare sett märkligt ut att bryta ut varje steg i egna variabler, så som författaren föreslår.   
+  
+Samtidigt förstår jag och håller med om tanken bakom regeln, att man inte bör anropa metoder på objekt som returneras av andra, eftersom det bryter inkapslingen. Jag hoppas att jag inte har gjort det i min egen kod. Jag tror inte det, eftersom vi tidigare i utbildningen har diskuterat liknande principer (till exempel att lager i en arkitektur bara ska prata med närmast underliggande lager och inte "hoppa över" ett lager bara för att det är enklare just i det fallet).  
+  
+En sak jag däremot har funderat på är att man ju också kan returnera this från en metod för att kunna kedja metodanrop på samma klass. I det fallet bildas ju ett liknande "tåg" av punkter, men man kommunicerar fortfarande med samma objekt. Jag undrar därför om författaren skulle betrakta det som ett brott mot Law of Demeter, eller om det skulle vara ett undantag eftersom kedjan rör samma instans. Detta är dock inget som berör min egen kod - jag returnerar aldrig this från metoder eller kedjar anrop, men det har nog mest berott på att jag glömmer bort att man kan göra så. Nu vet jag dock att det, åtminstone enligt författaren, inte är en rekommenderad praxis heller.  
+
+En annan sak jag funderar på är factory-klasser och factory-metoder.. dessa returnerar ju nya klasser eller instanser som är avsedda att användas av andra klasser. Menar författaren då att det designmönstret i så fall inte skulle räknas som clean code?  
+
+Regeln kring hybrids upplevde jag som lite svår att förstå och framför allt att följa. Varför är det egentligen så dåligt att ha getters? De underlättar ju till exempel vid enhetstestning. Jag hade gärna sett fler praktiska exempel från författaren på när hybrider faktiskt "stökar till" i koden.  
+
+Om man följer regeln om att inte anropa metoder på returnerade objekt, och dessutom följer principen om hiding structure - som jag i mitt fall gör genom att det som returneras från accessorerna antingen är primitiva typer eller deep clones av referenstyper (så att ett objekts attribut inte kan ändras utifrån) - då förstår jag inte riktigt var gettrarna gör skada.  
+
+Om jag tar Currency-klassen i min kod som exempel så gör den något viktigt (formatterar om sina valutakurser), men den har också två getters, varav den ena enbart returnerar id:t. Jag har svårt att se hur man skulle kunna skriva om koden för att separera dessa delar utan att förlora den konceptuella helheten. Författaren menar att man ska separera business logic från datastrukturen, och att klassen med logiken ska innehålla klassen med datan. Men hur ska då en annan klass (i mitt fall Data) kunna få tillgång till valutans id för att lägga till den i sin mappning av olika valutor? Kanske tänker jag för fyrkantigt, och det finns någon lösning på detta som jag helt enkelt inte kan se framför mig.   
 
 ## Kapitel 7
 
