@@ -1,0 +1,65 @@
+Date : 2025-10-22 00:46:33
+Directory : c:\Users\JuliaLind\Desktop\school\L3\public\js
+Total : 21 files,  -405 codes, 32 comments, 22 blanks, all -351 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JavaScript |         20 |        175 |         32 |         22 |        229 |
+| JSON       |          1 |       -580 |          0 |          0 |       -580 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                               | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                  |         21 |       -405 |         32 |         22 |       -351 |
+| . (Files)                                                                          |          1 |          1 |          0 |          1 |          2 |
+| ..                                                                                 |         14 |       -873 |       -301 |        -99 |     -1,273 |
+| ..\..                                                                              |         14 |       -873 |       -301 |        -99 |     -1,273 |
+| ..\..\src                                                                          |         14 |       -873 |       -301 |        -99 |     -1,273 |
+| ..\..\src (Files)                                                                  |          1 |         -5 |         -6 |         -2 |        -13 |
+| ..\..\src\config                                                                   |          4 |       -644 |        -68 |        -20 |       -732 |
+| ..\..\src\controllers                                                              |          1 |        -60 |        -57 |        -17 |       -134 |
+| ..\..\src\routes                                                                   |          3 |        -39 |        -18 |        -21 |        -78 |
+| ..\..\src\routes (Files)                                                           |          1 |        -15 |         -6 |         -8 |        -29 |
+| ..\..\src\routes\api                                                               |          2 |        -24 |        -12 |        -13 |        -49 |
+| ..\..\src\routes\api (Files)                                                       |          1 |        -15 |         -6 |         -6 |        -27 |
+| ..\..\src\routes\api\v1                                                            |          1 |         -9 |         -6 |         -7 |        -22 |
+| ..\..\src\services                                                                 |          5 |       -125 |       -152 |        -39 |       -316 |
+| ..\..\src\services (Files)                                                         |          3 |        -61 |        -71 |        -22 |       -154 |
+| ..\..\src\services\lib                                                             |          2 |        -64 |        -81 |        -17 |       -162 |
+| components                                                                         |          4 |        350 |        201 |         80 |        631 |
+| components (Files)                                                                 |          1 |        137 |         61 |         27 |        225 |
+| components\form                                                                    |          3 |        213 |        140 |         53 |        406 |
+| services                                                                           |          2 |        117 |        132 |         40 |        289 |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                           | language   | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\JuliaLind\Desktop\school\L3\public\js\components\form\checkable-option.js | JavaScript |         84 |         58 |         19 |        161 |
+| c:\Users\JuliaLind\Desktop\school\L3\public\js\components\form\checkable-select.js | JavaScript |         59 |         47 |         15 |        121 |
+| c:\Users\JuliaLind\Desktop\school\L3\public\js\components\form\conversion-form.js  | JavaScript |         70 |         35 |         19 |        124 |
+| c:\Users\JuliaLind\Desktop\school\L3\public\js\components\main-view.js             | JavaScript |        137 |         61 |         27 |        225 |
+| c:\Users\JuliaLind\Desktop\school\L3\public\js\index.js                            | JavaScript |          1 |          0 |          1 |          2 |
+| c:\Users\JuliaLind\Desktop\school\L3\public\js\services\ApiService.js              | JavaScript |         23 |         28 |         10 |         61 |
+| c:\Users\JuliaLind\Desktop\school\L3\public\js\services\CurrencyCalculator.js      | JavaScript |         94 |        104 |         30 |        228 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\ErrorHandler.js                    | JavaScript |        -36 |        -48 |         -8 |        -92 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\create-app.js                      | JavaScript |        -17 |        -14 |         -8 |        -39 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\start-app.js                       | JavaScript |        -11 |         -6 |         -4 |        -21 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\config\swagger-spec.json                  | JSON       |       -580 |          0 |          0 |       -580 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\controllers\ApiController.js              | JavaScript |        -60 |        -57 |        -17 |       -134 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\routes\api\router.js                      | JavaScript |        -15 |         -6 |         -6 |        -27 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\routes\api\v1\router.js                   | JavaScript |         -9 |         -6 |         -7 |        -22 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\routes\router.js                          | JavaScript |        -15 |         -6 |         -8 |        -29 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\server.js                                 | JavaScript |         -5 |         -6 |         -2 |        -13 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\ConversionService.js             | JavaScript |        -10 |        -13 |         -4 |        -27 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\RateService.js                   | JavaScript |        -35 |        -45 |        -12 |        -92 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\SwaggerService.js                | JavaScript |        -16 |        -13 |         -6 |        -35 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\lib\AverageRate.js               | JavaScript |        -60 |        -74 |        -16 |       -150 |
+| c:\Users\JuliaLind\Desktop\school\L3\src\services\lib\functions.js                 | JavaScript |         -4 |         -7 |         -1 |        -12 |
+| Total                                                                              |            |       -405 |         32 |         22 |       -351 |
++------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

@@ -1,0 +1,13 @@
+"filename", "language", "JavaScript", "JSON", "comment", "blank", "total"
+"c:\Users\JuliaLind\Desktop\school\L3\test\json\conversion.json", "JSON", 0, 0, 0, 1, 1
+"c:\Users\JuliaLind\Desktop\school\L3\test\json\day.json", "JSON", 0, 0, 0, 1, 1
+"c:\Users\JuliaLind\Desktop\school\L3\test\json\period.json", "JSON", 0, 0, 0, 1, 1
+"c:\Users\JuliaLind\Desktop\school\L3\test\routes\convert.spec.js", "JavaScript", 36, 0, 1, 13, 50
+"c:\Users\JuliaLind\Desktop\school\L3\test\routes\currencies.spec.js", "JavaScript", 32, 0, 1, 9, 42
+"c:\Users\JuliaLind\Desktop\school\L3\test\routes\date.spec.js", "JavaScript", 122, 0, 1, 19, 142
+"c:\Users\JuliaLind\Desktop\school\L3\test\routes\latest.spec.js", "JavaScript", 116, 0, 1, 16, 133
+"c:\Users\JuliaLind\Desktop\school\L3\test\routes\period.spec.js", "JavaScript", 91, 0, 1, 18, 110
+"c:\Users\JuliaLind\Desktop\school\L3\test\utils\functions.js", "JavaScript", 9, 0, 13, 2, 24
+"c:\Users\JuliaLind\Desktop\school\L3\test\webapp-services\ApiService.spec.js", "JavaScript", 82, 0, 21, 18, 121
+"c:\Users\JuliaLind\Desktop\school\L3\test\webapp-services\CurrencyCalculator.spec.js", "JavaScript", 154, 0, 0, 39, 193
+"Total", "-", 642, 0, 39, 137, 818

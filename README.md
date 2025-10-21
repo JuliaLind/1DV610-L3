@@ -6,7 +6,7 @@ This is a school project that is deployed at https://julia-lnu.duckdns.org/exr/ 
 
 ### RestAPI  
 
-The API https://julia-lnu.duckdns.org/exr/api/v1/ provides various endpoints that return average currencies based on passed parameters. The endpoints with usage examples are desribed with Swagger at https://julia-lnu.duckdns.org/exr/api/swagger.  
+The API https://julia-lnu.duckdns.org/exr/api/v1/ provides various endpoints that return average currencies based on passed parameters. The endpoints with usage examples are desribed with Swagger at https://julia-lnu.duckdns.org/exr/api/swagger/ (notera att den sista slashen måste vara med i urlen) .  
 
 ![Usage example API via Postman](.readme/usage_example_api.png)
 
