@@ -18,18 +18,20 @@ A single page application, with a GUI for converting an amount from base currenc
 
 ## Testing
 
-The API endpoints, and the service-classes used by webapp have been e2e tested with a coverage of above 90% measured with c8. Latest test report available under https://github.com/JuliaLind/1DV610-L3/actions/workflows/ci.yml .  
+The API endpoints, and the service-classes used by webapp have been e2e tested with a coverage of above 90% measured with c8. Latest test report available under https://github.com/JuliaLind/1DV610-L3/actions/workflows/ci.yml  and also in the separate file in Swedish testrapport.md.  
 
 ![test pt1](.readme/test_results_pt1.png)  
 ![test pt2](.readme/test_results_pt2.png)  
 
 The app is deployed via Guthub actions - both Lint and Test steps are required to pass in order fot he Deploy step to execute.   
 
-The webapp gui is tested manually (ref screenshot above, and slo for negative numbers).   
+The webapp gui is tested manually (ref screenshot above, and also for negative numbers).   
 
 ![GUI usage example 2](.readme/gui_usage_example_2.png)
 
 ## Requirements
+
+The requirements are also available in Swedish in kravspecifikation.md.  
 
 - A single-page-application where a user can convert an amount from any currency to other currencies
 - An restAPI where user can:
