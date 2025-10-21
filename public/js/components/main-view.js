@@ -210,7 +210,7 @@ customElements.define('main-view',
         const valueCell = row.querySelector('.value')
 
         currencyCell.textContent = currency
-        valueCell.textContent = value.toFixed(2)
+        valueCell.textContent = value
         tbody.append(row)
       }
     }

@@ -1,5 +1,3 @@
-import { DeepCloner } from '@jl225vf/exr'
-
 /**
  * CurrencyCalculator is a service for calculating currency conversions.
  */
@@ -9,7 +7,6 @@ export class CurrencyCalculator {
   #targetCurrencies = []
   #rates = {}
   #amount
-  #cloner = new DeepCloner()
 
   /**
    * Sets the amount to convert from base currency to target currencies.
@@ -100,7 +97,7 @@ export class CurrencyCalculator {
    * @returns {Array} the current target currencies
    */
   getTargetCurrencies () {
-    return this.#cloner.clone(this.#targetCurrencies)
+    return [...this.#targetCurrencies]
   }
 
   /**
@@ -219,11 +216,12 @@ export class CurrencyCalculator {
 
   /**
    * Converts the amount to one target currency.
+   * Converted amount is returned as string to be "printed" in an html table.
    *
    * @param {number} rate - the exchange rate to use for conversion of amount
-   * @returns {number|null} - the converted amount, or null if rate is not available
+   * @returns {string} - the converted amount as string or an empty string
    */
   #convertOne (rate) {
-    return rate ? Number((this.#amount * rate).toFixed(2)) : null
+    return rate ? (this.#amount * rate).toFixed(2) : ''
   }
 }

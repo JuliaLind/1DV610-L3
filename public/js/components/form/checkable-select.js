@@ -50,8 +50,6 @@ customElements.define(
       if (option) {
         this.#toggleSelection(option)
       }
-
-      console.log(this.#selected)
     }
 
     /**

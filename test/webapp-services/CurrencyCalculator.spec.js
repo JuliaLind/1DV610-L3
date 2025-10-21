@@ -129,7 +129,9 @@ describe('CurrencyCalculator', () => {
     calculator.setTargetCurrencies(['EUR', 'GBP', 'USD'])
     calculator.setRates(rates)
     const values = calculator.getValues()
-    expect(values).to.deep.equal(rates)
+    expect(values).to.deep.equal({
+      USD: '1.00', EUR: '0.90', GBP: '0.80'
+    })
   })
 
   describe('getValues', () => {
@@ -166,7 +168,7 @@ describe('CurrencyCalculator', () => {
       calculator.setRates(rates)
       const values = calculator.getValues()
       expect(values).to.deep.equal({
-        USD: 100, EUR: 90, GBP: 80
+        USD: '100.00', EUR: '90.00', GBP: '80.00'
       })
     })
   })
