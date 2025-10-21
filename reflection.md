@@ -258,7 +258,7 @@ blev
 
 Jag valde att använda map här eftersom det egentligen inte finns något scenario där BASE_CUR-dimensionen saknas i datan från API:et... om inte all data saknas, förstås, men i det fallet kommer ett fel att kastas redan från klassen som hanterar fetch-requesten till APIet.
 
-I den typ av loop med "early return" som jag hade tidigare uppstår problemet att man efter loopen måste explicit returnera undefined eller kasta ett fel. Jag tycker det blir missvisande eftersom det kan få läsaren att tro att attributet ibland saknas. Funktionellt sett behövs förstås inte något explicit returvärde i form av undefined , eftersom det är vad JavaScript automatiskt returnerar om inget värde anges, men det statiska analysverktyget Scrutinizer, som jag använt i tidigare kurs, brukar påpeka att det är "bad practice" om bara vissa exekveringsvägar av samma metod innehåller en return-sats. Att då använda map istället, kommer runt den problematiken. 
+I den typ av loop med "early return" som jag hade tidigare uppstår problemet att man efter loopen måste explicit returnera undefined eller kasta ett fel (där det senare alternativet är att föredra enligt samma regel som "Don't return null" i kapitel 7). Jag tycker det blir missvisande eftersom det kan få läsaren att tro att attributet ibland saknas. Funktionellt sett behövs förstås inte något explicit returvärde i form av undefined , eftersom det är vad JavaScript automatiskt returnerar om inget värde anges, men det statiska analysverktyget Scrutinizer, som jag använt i tidigare kurs, brukar påpeka att det är "bad practice" om bara vissa exekveringsvägar av samma metod innehåller en return-sats. Att då använda map istället, kommer runt den problematiken. 
   
 Cloner som används i koden är en egen DeepCloner-klass, som rekursivt gör en deep copy av objektet och alla underobjekt. På så sätt undviker jag sidoeffekter och att data kan modifieras utanför den klass där den hör hemma.  
   
@@ -758,6 +758,37 @@ try {
 ```  
 
 Av den anledningen skapar jag aldrig egna felklasser i JavaScript, utan kontrollerar istället felets innehåll på andra sätt, till exempel genom att sätta ett code-attribut på felet. Det blir oavsett mer omständligt i JavaScript jämfört med Python. Att jämföra mot error.message är inget bra alternativ, eftersom meddelandena ofta är långa och dessutom kan förändras under utveckling om jag kommer på en bättre formulering.  
+
+Författaren tar upp att man inte ska skicka in null som argument. Den regeln bryter jag mot på ett ställe, i TypeChecker-klassen. Det tycker jag dock är motiverat, eftersom det just är syftet med metoden: att ta reda på om ett element är null eller undefined, vilket i sin tur påverkar hur elementet ska kopieras av DeepCloner om det ligger i en datastruktur som ska klonas:  
+
+```js
+  /**
+   * Checks if the value is null or undefined.
+   *
+   * @param {any} value - The value to check.
+   * @returns { boolean } - True if the value is null or undefined, false otherwise.
+   */
+  isNullOrUndefined (value) {
+    return [null, undefined].includes(value)
+  }
+
+```
+
+Jag returnerar inte null (eller undefined) från några metoder i koden, utan hanterar det med antingen exceptions eller default-värden, beroende på vad som är mest lämpligt i sammanhanget. Till exempel, i metoden som räknar om belopp med respektive valutakurs för att presenteras i html-table, returnerar jag en tom sträng i det fall valutakursen skulle saknas. Jag har gjort bedömningen att en tom cell är rimligare att visa för användaren än en notis om att valutakursen saknas för den valutan. Här handlar det egentligen inte så mycket om Clean Code i strikt mening, utan mer om vad som är mest användbart ur användarens perspektiv:  
+
+```js 
+  /**
+   * Converts the amount to one target currency.
+   * Converted amount is returned as string to be "printed" in an html table.
+   *
+   * @param {number} rate - the exchange rate to use for conversion of amount
+   * @returns {string} - the converted amount as string or an empty string
+   */
+  #convertOne (rate) {
+    return rate ? (this.#amount * rate).toFixed(2) : ''
+  }
+  ```
+
 
 
 ## Kapitel 8
