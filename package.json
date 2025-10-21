@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/JuliaLind/1DV610-L3#readme",
   "dependencies": {
-    "@jl225vf/exr": "^4.0.5",
+    "@jl225vf/exr": "^4.0.6",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
