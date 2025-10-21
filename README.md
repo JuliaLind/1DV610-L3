@@ -8,6 +8,8 @@ This is a school project that is deployed at https://julia-lnu.duckdns.org/exr/ 
 
 The API https://julia-lnu.duckdns.org/exr/api/v1/ provides various endpoints that return average currencies based on passed parameters. The endpoints with usage examples are desribed with Swagger at https://julia-lnu.duckdns.org/exr/api/swagger.  
 
+![Usage example API via Postman](.readme/usage_example_api.png)
+
 ### Single-page web-application
 
 A single page application, with a GUI for converting an amount from base currency to target currencies, is available at root https://julia-lnu.duckdns.org/exr/.  
