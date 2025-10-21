@@ -17,9 +17,9 @@ npm run test
 
 ## Test specifikation och kodtäckningsrapport
 
-![test specification part 1](.readme/test-results_pt1.png)
+![test specification part 1](.readme/test_results_pt1.png)
 
-![test specification part 2](.readme/test-results_pt2.png)
+![test specification part 2](.readme/test_results_pt2.png)
 
 
 Testsviterna finns i ./test/routes respektive .test/webapp-services katalogerna.
@@ -32,9 +32,9 @@ Lanuella tester av webapplikationen.
 3. i Target currencies listan bocka i AUD, BGN, samt BRL  
 4. Klicka på Convert-knappen  
 
-Resultatet ska visas i en tabell under knappen enligt:
+Resultatet ska visas i en tabell under knappen enligt (men värdena kan förstås variera eftersom det är beräknat från de senast kända valutakurserna som uppdateras i realtid):
 
-![manual test 1](.readme/test-results_pt1.png)  
+![manual test 1](.readme/gui_usage_example_1.png)  
 
 ### Test case 1:
 1. i Amount-fältet fyll i -80
@@ -42,7 +42,7 @@ Resultatet ska visas i en tabell under knappen enligt:
 3. i Target currencies listan bocka i BDT, samt BGN  
 4. Klicka på Convert-knappen  
 
-Resultatet ska visas i en tabell under knappen enligt:
+Resultatet ska visas i en tabell under knappen enligt (men värdena kan förstås variera eftersom det är beräknat från de senast kända valutakurserna som uppdateras i realtid):
 
-![manual test 2 2](.readme/test-results_pt2.png)
+![manual test 2 2](.readme/gui_usage_example_2.png)
 
