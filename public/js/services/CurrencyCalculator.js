@@ -1,4 +1,4 @@
-import { DeepCloner } from "@jl225vf/exr"
+import { DeepCloner } from '@jl225vf/exr'
 
 /**
  * CurrencyCalculator is a service for calculating currency conversions.
