@@ -791,9 +791,82 @@ Jag returnerar inte null (eller undefined) från några metoder i koden, utan ha
 
 
 
-## Kapitel 8
+## Kapitel 8 - Boundaries
 
-## Kapitel 9
+Författaren beskriver vikten av att hålla tydliga gränser mot extern kod och att testa tredjeparts-API:er med så kallade learning tests. Jag hade inte hunnit läsa det här kapitlet när jag skrev koden, och i tidigare utbildningar har jag lärt mig att man inte behöver testa kod som är skriven av andra. Därför har jag i L2-modulen (som i sig har hög kodtäckning genom egna tester) inte testat L2 via L3-modulen.  
+
+I mina e2e-tester av REST-API:et jag gjort i L3 mockar jag i stället returvärdena från L2-modulen. Testerna körs alltså från där L3-koden börjar till där den slutar. Däremot har jag manuellt gjort anrop till Norges Banks API via Postman för att förstå hur det fungerar. Det var då jag bland annat upptäckte att vissa valutor, till exempel SEK, har den senaste kursen från närmast föregående bankdag, medan RUB hämtar senaste kursen från 2022. Även i L2-tester undviker jag automatiska anrop till Norges Banks API (det skulle nog inte vara så uppskattat) och använder i stället sparade JSON-svar som testdata.  
+
+i L3 tester har jag exempelvis:
+
+```js
+import { rateFetcher } from '../../src/services/RateService.js'
+import { calculateAverage, round } from '../utils/functions.js'
+
+chai.use(sinonChai)
+const { expect } = chai
+
+describe('e2e - latest', () => {
+  let fetcherStub
+
+  before(() => {
+    fetcherStub = sinon.stub(rateFetcher, 'fetchLatest')
+  })
+
+  after(() => {
+    sinon.restore()
+  })
+
+  afterEach(() => {
+    fetcherStub.resetHistory()
+    fetcherStub.resetBehavior()
+  })
+
+  it('average based on one observation: latest/DKK+EUR', async function () {
+    const rates = {
+      DKK: {
+        '2025-09-19': 1.5637
+      },
+      EUR: {
+        '2025-09-19': 11.6705
+      }
+    }
+
+    fetcherStub.resolves(rates)
+
+```
+
+och i RateService.js exporteras fetcher så:
+
+```js
+import { RateFetcher } from '@jl225vf/exr'
+import { stringToArray } from './lib/functions.js'
+import { AverageRate } from './lib/AverageRate.js'
+
+export const rateFetcher = new RateFetcher() // export for testing purposes
+/**
+ * Service for fetching exchange rates.
+ */
+export class RateService {
+  #fetcher
+
+  /**
+   * Creates a new instance of RateService.
+   *
+   * @param {RateFetcher} fetcher - class that fetches data from the Norway API.
+   */
+  constructor (fetcher = rateFetcher) {
+    this.#fetcher = fetcher
+  }
+  ```
+
+På ett sätt bryter detta mot inkapslingen, men det är nödvändigt för att kunna testa restAPI-routningen med samma instans av fetcher som används av den server som testas för att göra testerna helt oberoende av L2 modulen.  
+
+Jag gillar författarens approach i log4j-exemplet. Det är ett betydligt smartare sätt att testa tredjepartsmoduler i Node än att “console-logga sig fram”, vilket jag ofta gör eftersom jag är för otålig för att sätta mig in i dokumentationen. Med learning tests skulle jag istället kunna pröva mig fram på ett mer strukturerat sätt och samtidigt behålla historiken över vad jag faktiskt har testat, både för att snabbt kunna sätta mig in i modulen igen om jag skulle behöva använda den igen i framtiden, men också för att enklare upptäcka eventuella förändringar i framtida versioner av tredjepartsmodulen. Och det är precis det författaren beskriver i avsnittet Learning Tests Are Better Than Free. Han menar att det publika gränssnittet i ett tredjeparts-API bör testas på exakt samma sätt som modulen används i produktionskoden, för att säkerställa att vi upptäcker om förändringar i modulen gör den inkompatibel med vår egen kod.  
+
+En annan idé som författaren tar upp, som inte direkt var relevant för min nuvarande kod men som jag tror kan bli användbar längre fram i kursen, särskilt när man bygger större system i team, är att skapa ett "fejk interface" att arbeta mot. När det faktiska interfacet sedan blir känt kan man bygga en adapter som kopplar ihop den egna koden med det riktiga interfacet. Genom att använda en egen adapter får man dessutom full kontroll över hur mycket arbete som kommer att krävas om API:ets publika gränssnitt skulle förändras.  
+
+## Kapitel 9 - Unittests
 
 ## Kapitel 10
 
